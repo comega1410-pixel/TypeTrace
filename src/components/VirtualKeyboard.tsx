@@ -108,14 +108,12 @@ export const VirtualKeyboard: React.FC<VirtualKeyboardProps> = ({
   showKeyboard = true,
   showHandsGuide = true,
 }) => {
-  // If both aids are disabled, reclaim all vertical space
   if (!showKeyboard && !showHandsGuide) {
     return null;
   }
 
   const normalizedTargetKey = (currentKey || '').toLowerCase();
 
-  // Find target finger for active key
   let activeFinger: KeyConfig['finger'] | null = null;
   if (currentKey === ' ') {
     activeFinger = 'Thumb';
@@ -136,31 +134,31 @@ export const VirtualKeyboard: React.FC<VirtualKeyboardProps> = ({
     <div className="w-full max-w-[864px] mx-auto select-none mt-4 sm:mt-5 space-y-3 transition-all duration-300">
       {/* 5. Next-key indicator: centered dark green status bar with thin green border */}
       {showHandsGuide && currentKey && activeFinger && (
-        <div className="flex items-center justify-between px-3 sm:px-4 py-2 text-xs font-medium rounded-xl bg-[#00d49a]/10 text-[#00d49a] border border-[#00d49a]/30 max-w-md mx-auto shadow-sm">
+        <div className="flex items-center justify-between px-3 sm:px-4 py-2 text-xs font-semibold rounded-xl bg-[#00d49a]/15 backdrop-blur-md text-[#00d49a] border border-[#00d49a]/35 max-w-md mx-auto shadow-md">
           <div className="flex items-center gap-2">
             <span className="inline-block w-2 h-2 rounded-full bg-[#00d49a] animate-pulse"></span>
             <span>
               Next Key:{' '}
-              <strong className="font-mono text-sm underline font-bold">
+              <strong className="font-mono text-sm underline font-bold text-white">
                 {currentKey === ' ' ? 'Space' : currentKey}
               </strong>
             </span>
           </div>
-          <span className="font-normal text-[#00d49a]/90 text-[11px] sm:text-xs">
+          <span className="font-normal text-[#00d49a] text-[11px] sm:text-xs">
             Use: <strong>{FINGER_NAMES[activeFinger]}</strong>
           </span>
         </div>
       )}
 
-      {/* 6. Virtual Keyboard Container */}
+      {/* 6. Virtual Keyboard Container with light-balanced key labels */}
       {showKeyboard && (
         <div
-          className={`p-2.5 sm:p-4 rounded-2xl border transition-colors shadow-lg overflow-x-auto ${
+          className={`p-2.5 sm:p-4 rounded-2xl border transition-colors shadow-2xl overflow-x-auto ${
             isDark
-              ? 'bg-[#0f1728] border-[#1e293b]'
+              ? 'bg-[#0f1728]/85 backdrop-blur-md border-white/12'
               : isSepia
-              ? 'bg-[var(--bg-panel)] border-[var(--border-panel)]'
-              : 'bg-white border-slate-200'
+              ? 'bg-[var(--bg-panel)] backdrop-blur-md border-[var(--border-panel)]'
+              : 'bg-white/95 backdrop-blur-md border-slate-200 shadow-xl'
           }`}
         >
           <div className="flex flex-col gap-1 sm:gap-1.5 min-w-[580px] sm:min-w-0">
@@ -174,7 +172,7 @@ export const VirtualKeyboard: React.FC<VirtualKeyboardProps> = ({
                   const isHomeRowAnchor = item.key === 'f' || item.key === 'j';
 
                   let keyClasses =
-                    'h-8 sm:h-9 md:h-10 text-[11px] sm:text-xs font-medium rounded-lg flex flex-col items-center justify-center transition-all duration-150 relative ';
+                    'h-8 sm:h-9 md:h-10 text-[11px] sm:text-xs font-semibold rounded-lg flex flex-col items-center justify-center transition-all duration-150 relative shadow-xs ';
 
                   if (item.width) {
                     keyClasses += item.width + ' ';
@@ -184,16 +182,17 @@ export const VirtualKeyboard: React.FC<VirtualKeyboardProps> = ({
 
                   if (isTarget) {
                     keyClasses +=
-                      'bg-[#00d49a] text-[#0b0f14] shadow-md shadow-[#00d49a]/30 scale-105 z-10 border border-[#00d49a] font-bold';
+                      'bg-[#00d49a] text-[#0b0f14] shadow-lg shadow-[#00d49a]/35 scale-105 z-10 border border-[#00d49a] font-bold';
                   } else if (isDark) {
+                    // Light, crisp keycap labels
                     keyClasses +=
-                      'bg-[#151f32] text-[#cbd5e1] border border-[#22324d] hover:border-[#334668]';
+                      'bg-[#162238] text-slate-100 border border-white/10 hover:border-white/20 hover:text-white';
                   } else if (isSepia) {
                     keyClasses +=
                       'bg-[var(--key-bg)] text-[var(--key-text)] border border-[var(--key-border)] hover:opacity-90';
                   } else {
                     keyClasses +=
-                      'bg-slate-100 text-slate-700 border border-slate-200 hover:border-slate-300';
+                      'bg-slate-100 text-slate-800 border border-slate-200 hover:border-slate-300';
                   }
 
                   return (
@@ -205,7 +204,7 @@ export const VirtualKeyboard: React.FC<VirtualKeyboardProps> = ({
                         <span
                           className={`w-3 h-0.5 rounded-full absolute bottom-1 ${
                             isDark
-                              ? 'bg-[#64748b]'
+                              ? 'bg-slate-300'
                               : isSepia
                               ? 'bg-[var(--key-bump)]'
                               : 'bg-slate-400'
@@ -220,14 +219,14 @@ export const VirtualKeyboard: React.FC<VirtualKeyboardProps> = ({
           </div>
 
           {/* Hand reference footer */}
-          <div className="flex items-center justify-between text-[11px] text-[#64748b] mt-3 pt-2 border-t border-[#1e293b]/70 px-2">
+          <div className="flex items-center justify-between text-[11px] text-slate-300 mt-3 pt-2.5 border-t border-white/10 px-2 font-medium">
             <div className="flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-[#00d49a]"></span>
               <span>
-                Home row anchors: <strong>F</strong> &amp; <strong>J</strong>
+                Home row anchors: <strong className="text-white">F</strong> &amp; <strong className="text-white">J</strong>
               </span>
             </div>
-            <span className="hidden sm:inline text-[#475569]">
+            <span className="hidden sm:inline text-slate-400">
               Rest fingers gently &amp; keep wrists relaxed
             </span>
           </div>

@@ -46,24 +46,25 @@ export const Dashboard: React.FC<DashboardProps> = ({
   };
 
   return (
-    <PageShell variant="dashboard" className="space-y-8 animate-in fade-in duration-300">
+    <PageShell variant="dashboard" className="space-y-8 animate-in fade-in duration-300 relative z-10">
       {/* 1. Coach Recommendation Banner ("What should I practice next?") */}
-      <div className="relative overflow-hidden rounded-2xl bg-[#0f1728] border border-[#00d49a]/30 p-6 sm:p-7 shadow-xl">
+      <div className="relative overflow-hidden rounded-2xl bg-[#0f1728]/85 backdrop-blur-md border border-[#00d49a]/35 p-6 sm:p-7 shadow-2xl">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative z-10">
           <div className="space-y-1.5">
-            <div className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-[#00d49a]">
+            <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#00d49a]">
               <Sparkles className="w-3.5 h-3.5" />
               <span>Coach Insight & Next Step</span>
             </div>
             <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
               {coachTip.headline}
             </h2>
-            <p className="text-sm text-[#cbd5e1] max-w-xl leading-relaxed">
+            <p className="text-sm text-slate-200 max-w-xl leading-relaxed">
               {coachTip.message}
             </p>
           </div>
 
           <button
+            type="button"
             onClick={() => onStartPractice()}
             className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#00d49a] hover:bg-[#00d49a]/90 text-[#0b0f14] font-bold text-sm transition-all duration-150 shadow-md shadow-[#00d49a]/25 active:scale-95 shrink-0 cursor-pointer"
           >
@@ -76,66 +77,66 @@ export const Dashboard: React.FC<DashboardProps> = ({
       {/* 2. Key Metrics Grid ("How am I doing?") */}
       <div>
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-base font-semibold text-white flex items-center gap-2">
+          <h3 className="text-base font-bold text-white flex items-center gap-2">
             <TrendingUp className="w-4 h-4 text-[#00d49a]" />
             <span>How Am I Doing?</span>
           </h3>
-          <span className="text-xs text-[#64748b]">Live progress snapshot</span>
+          <span className="text-xs text-slate-400 font-medium">Live progress snapshot</span>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
           {/* Best WPM */}
-          <div className="p-4 rounded-xl bg-[#0f1728] border border-[#1e293b] shadow-xs">
-            <div className="flex items-center justify-between text-[#64748b] text-xs font-medium">
+          <div className="p-4 rounded-xl bg-[#0f1728]/85 backdrop-blur-md border border-white/10 shadow-lg">
+            <div className="flex items-center justify-between text-slate-300 text-xs font-medium">
               <span className="uppercase tracking-wider">Top Speed</span>
               <Zap className="w-4 h-4 text-amber-400" />
             </div>
             <div className="mt-2 text-2xl sm:text-3xl font-extrabold text-white">
-              {stats.bestWpm} <span className="text-xs font-normal text-[#64748b]">WPM</span>
+              {stats.bestWpm} <span className="text-xs font-normal text-slate-400">WPM</span>
             </div>
-            <div className="text-[11px] text-[#64748b] mt-1">
+            <div className="text-[11px] text-slate-400 mt-1 font-medium">
               Avg: {stats.avgWpm} WPM
             </div>
           </div>
 
           {/* Average Accuracy */}
-          <div className="p-4 rounded-xl bg-[#0f1728] border border-[#1e293b] shadow-xs">
-            <div className="flex items-center justify-between text-[#64748b] text-xs font-medium">
+          <div className="p-4 rounded-xl bg-[#0f1728]/85 backdrop-blur-md border border-white/10 shadow-lg">
+            <div className="flex items-center justify-between text-slate-300 text-xs font-medium">
               <span className="uppercase tracking-wider">Accuracy</span>
               <Target className="w-4 h-4 text-[#00d49a]" />
             </div>
             <div className="mt-2 text-2xl sm:text-3xl font-extrabold text-white">
               {stats.avgAccuracy || 100}%
             </div>
-            <div className="text-[11px] text-[#64748b] mt-1">
+            <div className="text-[11px] text-slate-400 mt-1 font-medium">
               Across {stats.sessionsCount} sessions
             </div>
           </div>
 
           {/* Practice Streak */}
-          <div className="p-4 rounded-xl bg-[#0f1728] border border-[#1e293b] shadow-xs">
-            <div className="flex items-center justify-between text-[#64748b] text-xs font-medium">
+          <div className="p-4 rounded-xl bg-[#0f1728]/85 backdrop-blur-md border border-white/10 shadow-lg">
+            <div className="flex items-center justify-between text-slate-300 text-xs font-medium">
               <span className="uppercase tracking-wider">Practice Streak</span>
               <Flame className="w-4 h-4 text-orange-400" />
             </div>
             <div className="mt-2 text-2xl sm:text-3xl font-extrabold text-white">
-              {stats.currentStreak} <span className="text-xs font-normal text-[#64748b]">days</span>
+              {stats.currentStreak} <span className="text-xs font-normal text-slate-400">days</span>
             </div>
-            <div className="text-[11px] text-[#64748b] mt-1">
+            <div className="text-[11px] text-slate-400 mt-1 font-medium">
               Best: {stats.bestStreak} days
             </div>
           </div>
 
           {/* Practice Time */}
-          <div className="p-4 rounded-xl bg-[#0f1728] border border-[#1e293b] shadow-xs">
-            <div className="flex items-center justify-between text-[#64748b] text-xs font-medium">
+          <div className="p-4 rounded-xl bg-[#0f1728]/85 backdrop-blur-md border border-white/10 shadow-lg">
+            <div className="flex items-center justify-between text-slate-300 text-xs font-medium">
               <span className="uppercase tracking-wider">Total Practice</span>
               <Clock className="w-4 h-4 text-blue-400" />
             </div>
             <div className="mt-2 text-2xl sm:text-3xl font-extrabold text-white">
               {formatPracticeTime(stats.totalTimeSeconds)}
             </div>
-            <div className="text-[11px] text-[#64748b] mt-1">
+            <div className="text-[11px] text-slate-400 mt-1 font-medium">
               {stats.totalWords.toLocaleString()} words typed
             </div>
           </div>
@@ -143,19 +144,19 @@ export const Dashboard: React.FC<DashboardProps> = ({
       </div>
 
       {/* 3. Progress Visualizer ("Am I improving?") */}
-      <div className="p-5 sm:p-6 rounded-2xl bg-[#0f1728] border border-[#1e293b] shadow-xl">
+      <div className="p-5 sm:p-6 rounded-2xl bg-[#0f1728]/85 backdrop-blur-md border border-white/10 shadow-2xl">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
           <div>
-            <h3 className="text-base font-semibold text-white flex items-center gap-2">
+            <h3 className="text-base font-bold text-white flex items-center gap-2">
               <TrendingUp className="w-4 h-4 text-[#00d49a]" />
               <span>Speed & Consistency Progression</span>
             </h3>
-            <p className="text-xs text-[#64748b] mt-0.5">
+            <p className="text-xs text-slate-300 mt-0.5">
               Visual history of your recent practice runs
             </p>
           </div>
           {chartSessions.length > 1 && (
-            <div className="flex items-center gap-3 text-xs text-[#64748b]">
+            <div className="flex items-center gap-3 text-xs text-slate-300">
               <span className="flex items-center gap-1.5">
                 <span className="w-2.5 h-2.5 rounded-full bg-[#00d49a]"></span> WPM
               </span>
@@ -167,39 +168,39 @@ export const Dashboard: React.FC<DashboardProps> = ({
         </div>
 
         {chartSessions.length === 0 ? (
-          <div className="py-12 text-center text-[#64748b] text-sm">
+          <div className="py-12 text-center text-slate-300 text-sm">
             Complete your first session to see your progress curve here!
           </div>
         ) : (
           <div className="space-y-4">
             {/* SVG Line / Bar Chart */}
-            <div className="h-44 w-full flex items-end gap-2 pt-6 pb-2 px-2 border-b border-[#1e293b]">
+            <div className="h-44 w-full flex items-end gap-2 pt-6 pb-2 px-2 border-b border-white/10">
               {chartSessions.map((s, idx) => {
                 const heightPercent = Math.max(12, Math.min(100, (s.wpm / maxWpm) * 100));
                 return (
                   <div key={idx} className="flex-1 flex flex-col items-center gap-1.5 group relative h-full justify-end">
-                    <div className="opacity-0 group-hover:opacity-100 transition-opacity absolute -top-8 px-2 py-1 rounded bg-[#0b0f14] border border-[#1e293b] text-white text-[10px] pointer-events-none whitespace-nowrap z-20 shadow">
+                    <div className="opacity-0 group-hover:opacity-100 transition-opacity absolute -top-8 px-2 py-1 rounded bg-[#0b0f14] border border-white/20 text-white text-[10px] pointer-events-none whitespace-nowrap z-20 shadow-md">
                       {s.wpm} WPM &middot; {s.accuracy}%
                     </div>
 
                     <div
-                      className="w-full max-w-[28px] rounded-t-md bg-[#00d49a]/80 group-hover:bg-[#00d49a] transition-all duration-300 relative overflow-hidden"
+                      className="w-full max-w-[28px] rounded-t-md bg-[#00d49a] group-hover:bg-[#00d49a]/90 transition-all duration-300 relative overflow-hidden shadow-sm"
                       style={{ height: `${heightPercent}%` }}
                     >
                       <div
-                        className="absolute bottom-0 inset-x-0 bg-blue-500/40"
+                        className="absolute bottom-0 inset-x-0 bg-blue-400/50"
                         style={{ height: `${s.accuracy}%` }}
                       />
                     </div>
 
-                    <span className="text-[10px] text-[#64748b] font-mono">
+                    <span className="text-[10px] text-slate-300 font-mono font-bold">
                       {s.wpm}
                     </span>
                   </div>
                 );
               })}
             </div>
-            <div className="flex justify-between text-[11px] text-[#64748b] px-2">
+            <div className="flex justify-between text-[11px] text-slate-400 px-2 font-medium">
               <span>Earlier runs</span>
               <span>Latest session</span>
             </div>
@@ -208,51 +209,51 @@ export const Dashboard: React.FC<DashboardProps> = ({
       </div>
 
       {/* 4. Recent Sessions ("What did I practice?") */}
-      <div className="p-5 sm:p-6 rounded-2xl bg-[#0f1728] border border-[#1e293b] shadow-xl">
+      <div className="p-5 sm:p-6 rounded-2xl bg-[#0f1728]/85 backdrop-blur-md border border-white/10 shadow-2xl">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-base font-semibold text-white flex items-center gap-2">
+          <h3 className="text-base font-bold text-white flex items-center gap-2">
             <History className="w-4 h-4 text-[#00d49a]" />
             <span>Recent Sessions</span>
           </h3>
-          <span className="text-xs text-[#64748b]">
+          <span className="text-xs text-slate-300 font-medium">
             {sessions.length} total logged
           </span>
         </div>
 
         {recentSessions.length === 0 ? (
-          <div className="py-8 text-center text-[#64748b] text-sm">
+          <div className="py-8 text-center text-slate-300 text-sm">
             No practice sessions recorded yet. Start your first exercise above!
           </div>
         ) : (
-          <div className="divide-y divide-[#1e293b]">
+          <div className="divide-y divide-white/10">
             {recentSessions.map((session) => (
               <div
                 key={session.id}
                 className="py-3 flex items-center justify-between gap-3 text-sm"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-[#00d49a]/10 text-[#00d49a] flex items-center justify-center font-mono text-xs font-bold border border-[#00d49a]/20">
+                  <div className="w-8 h-8 rounded-lg bg-[#00d49a]/15 text-[#00d49a] flex items-center justify-center font-mono text-xs font-bold border border-[#00d49a]/30">
                     {session.wpm}
                   </div>
                   <div>
-                    <div className="font-medium text-white text-xs sm:text-sm">
+                    <div className="font-semibold text-white text-xs sm:text-sm">
                       {session.modeDetail || `${session.mode} practice`}
                     </div>
-                    <div className="text-[11px] text-[#64748b]">
+                    <div className="text-[11px] text-slate-300">
                       {new Date(session.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} &middot; {session.durationSeconds}s &middot; {session.wordsCount} words
                     </div>
                   </div>
                 </div>
 
                 <div className="text-right">
-                  <span className={`inline-block px-2 py-0.5 rounded text-xs font-semibold ${
+                  <span className={`inline-block px-2 py-0.5 rounded text-xs font-bold ${
                     session.accuracy >= 95
-                      ? 'bg-[#00d49a]/10 text-[#00d49a]'
-                      : 'bg-amber-500/10 text-amber-400'
+                      ? 'bg-[#00d49a]/15 text-[#00d49a] border border-[#00d49a]/30'
+                      : 'bg-amber-500/15 text-amber-300 border border-amber-500/30'
                   }`}>
                     {session.accuracy}% acc
                   </span>
-                  <div className="text-[10px] text-[#64748b] mt-0.5">
+                  <div className="text-[10px] text-slate-400 mt-0.5">
                     {session.errors === 0 ? 'No typos' : `${session.errors} typos`}
                   </div>
                 </div>
@@ -263,18 +264,18 @@ export const Dashboard: React.FC<DashboardProps> = ({
       </div>
 
       {/* 5. Milestone Badges */}
-      <div className="p-5 sm:p-6 rounded-2xl bg-[#0f1728] border border-[#1e293b] shadow-xl">
+      <div className="p-5 sm:p-6 rounded-2xl bg-[#0f1728]/85 backdrop-blur-md border border-white/10 shadow-2xl">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h3 className="text-base font-semibold text-white flex items-center gap-2">
+            <h3 className="text-base font-bold text-white flex items-center gap-2">
               <Award className="w-4 h-4 text-amber-400" />
               <span>Milestone Badges</span>
             </h3>
-            <p className="text-xs text-[#64748b] mt-0.5">
+            <p className="text-xs text-slate-300 mt-0.5">
               Gentle personal achievements unlocked through relaxed consistency
             </p>
           </div>
-          <span className="text-xs font-semibold px-2 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">
+          <span className="text-xs font-bold px-2 py-1 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30">
             {stats.unlockedBadgeIds.length} / {ALL_BADGES.length} Unlocked
           </span>
         </div>
@@ -288,8 +289,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 key={badge.id}
                 className={`p-3.5 rounded-xl border transition-all text-left flex flex-col justify-between ${
                   isUnlocked
-                    ? 'bg-[#151f32] border-amber-500/30 text-white'
-                    : 'bg-[#151f32]/40 border-[#1e293b]/70 opacity-40'
+                    ? 'bg-[#152238]/90 border-amber-500/40 text-white shadow-md'
+                    : 'bg-[#152238]/40 border-white/10 opacity-50'
                 }`}
               >
                 <div>
@@ -298,17 +299,17 @@ export const Dashboard: React.FC<DashboardProps> = ({
                       {isUnlocked ? (
                         <CheckCircle className="w-5 h-5 text-amber-400" />
                       ) : (
-                        <Lock className="w-4 h-4 text-[#64748b]" />
+                        <Lock className="w-4 h-4 text-slate-400" />
                       )}
                     </span>
-                    <span className="text-[10px] font-semibold uppercase tracking-wider text-[#64748b]">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-300">
                       {badge.category}
                     </span>
                   </div>
-                  <h4 className="font-semibold text-xs sm:text-sm text-white">
+                  <h4 className="font-bold text-xs sm:text-sm text-white">
                     {badge.title}
                   </h4>
-                  <p className="text-[11px] text-[#94a3b8] mt-1 leading-snug">
+                  <p className="text-[11px] text-slate-300 mt-1 leading-snug">
                     {badge.description}
                   </p>
                 </div>

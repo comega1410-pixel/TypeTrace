@@ -11,7 +11,10 @@ import {
   BookOpen,
   BarChart3,
   Play,
+  Sparkles,
 } from 'lucide-react';
+
+export type AmbientVibe = 'emerald' | 'sunset' | 'cyber';
 
 interface NavbarProps {
   currentTab: 'practice' | 'lessons' | 'dashboard';
@@ -19,6 +22,8 @@ interface NavbarProps {
   settings: UserSettings;
   onUpdateSettings: (updater: Partial<UserSettings>) => void;
   stats: UserStats;
+  ambientVibe?: AmbientVibe;
+  onCycleAmbientVibe?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -27,6 +32,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   settings,
   onUpdateSettings,
   stats,
+  ambientVibe = 'emerald',
+  onCycleAmbientVibe,
 }) => {
   const cycleTheme = () => {
     const themeCycle: Theme[] = ['dark', 'light', 'sepia'];
@@ -41,7 +48,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   };
 
   return (
-    <header className="w-full border-b border-[#1e293b] bg-[#0f1728] sticky top-0 z-30 transition-colors">
+    <header className="w-full border-b border-white/10 bg-[#0f1728]/85 backdrop-blur-md sticky top-0 z-30 transition-colors">
       <div className="max-w-6xl mx-auto px-2.5 sm:px-4 h-14 sm:h-16 flex items-center justify-between gap-2 sm:gap-4">
         {/* Brand Logo & Wordmark: small green rounded-square logo with "Ti" */}
         <div
@@ -57,21 +64,21 @@ export const Navbar: React.FC<NavbarProps> = ({
                 Type<span className="text-[#00d49a]">Track</span>
               </span>
             </div>
-            <p className="text-[10px] text-[#64748b] font-medium hidden sm:block -mt-0.5">
+            <p className="text-[10px] text-slate-300 font-medium hidden sm:block -mt-0.5">
               Calm typing coach
             </p>
           </div>
         </div>
 
         {/* Center Navigation Buttons: Practice, Learn, Progress */}
-        <nav className="flex items-center gap-0.5 sm:gap-1 bg-[#151f32] p-0.5 sm:p-1 rounded-xl border border-[#22324d] shrink-0">
+        <nav className="flex items-center gap-0.5 sm:gap-1 bg-[#151f32]/90 p-0.5 sm:p-1 rounded-xl border border-white/10 shrink-0">
           <button
             type="button"
             onClick={() => onTabChange('practice')}
             className={`px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-medium flex items-center gap-1 sm:gap-1.5 transition-all cursor-pointer ${
               currentTab === 'practice'
-                ? 'bg-[#0f1728] text-white shadow-xs font-semibold border border-[#1e293b]'
-                : 'text-[#64748b] hover:text-white'
+                ? 'bg-[#0f1728] text-white shadow-xs font-semibold border border-white/15'
+                : 'text-slate-300 hover:text-white'
             }`}
           >
             <Play className={`w-3.5 h-3.5 ${currentTab === 'practice' ? 'text-[#00d49a]' : ''}`} />
@@ -83,8 +90,8 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={() => onTabChange('lessons')}
             className={`px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-medium flex items-center gap-1 sm:gap-1.5 transition-all cursor-pointer ${
               currentTab === 'lessons'
-                ? 'bg-[#0f1728] text-white shadow-xs font-semibold border border-[#1e293b]'
-                : 'text-[#64748b] hover:text-white'
+                ? 'bg-[#0f1728] text-white shadow-xs font-semibold border border-white/15'
+                : 'text-slate-300 hover:text-white'
             }`}
           >
             <BookOpen className={`w-3.5 h-3.5 ${currentTab === 'lessons' ? 'text-[#00d49a]' : ''}`} />
@@ -96,8 +103,8 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={() => onTabChange('dashboard')}
             className={`px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-medium flex items-center gap-1 sm:gap-1.5 transition-all cursor-pointer ${
               currentTab === 'dashboard'
-                ? 'bg-[#0f1728] text-white shadow-xs font-semibold border border-[#1e293b]'
-                : 'text-[#64748b] hover:text-white'
+                ? 'bg-[#0f1728] text-white shadow-xs font-semibold border border-white/15'
+                : 'text-slate-300 hover:text-white'
             }`}
           >
             <BarChart3 className={`w-3.5 h-3.5 ${currentTab === 'dashboard' ? 'text-[#00d49a]' : ''}`} />
@@ -105,16 +112,35 @@ export const Navbar: React.FC<NavbarProps> = ({
           </button>
         </nav>
 
-        {/* Right Actions: Streak, Settings, Sound, Theme */}
+        {/* Right Actions: Streak, Ambient Vibe, Settings, Sound, Theme */}
         <div className="flex items-center gap-1 sm:gap-2 shrink-0">
           {/* Daily Streak Indicator */}
           <div
             title={`${stats.currentStreak} day practice streak`}
-            className="flex items-center gap-1 px-2 sm:px-2.5 py-1 rounded-lg bg-orange-500/10 text-orange-400 border border-orange-500/20 text-xs font-bold"
+            className="flex items-center gap-1 px-2 sm:px-2.5 py-1 rounded-lg bg-orange-500/15 text-orange-400 border border-orange-500/30 text-xs font-bold"
           >
             <Flame className="w-3.5 h-3.5 fill-current" />
             <span>{stats.currentStreak}</span>
           </div>
+
+          {/* Ambient Aura Vibe Toggle */}
+          {onCycleAmbientVibe && (
+            <button
+              type="button"
+              onClick={onCycleAmbientVibe}
+              title={`Ambient Aura: ${ambientVibe} (click to cycle glow)`}
+              className={`p-1.5 sm:p-2 rounded-lg text-xs font-medium border border-white/10 transition-colors cursor-pointer ${
+                ambientVibe === 'sunset'
+                  ? 'bg-orange-500/20 text-orange-400 border-orange-500/30'
+                  : ambientVibe === 'cyber'
+                  ? 'bg-sky-500/20 text-sky-400 border-sky-500/30'
+                  : 'bg-[#00d49a]/20 text-[#00d49a] border-[#00d49a]/30'
+              }`}
+              aria-label="Cycle ambient aura"
+            >
+              <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            </button>
+          )}
 
           {/* Settings / Focus Mode */}
           <button
@@ -124,7 +150,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             className={`p-1.5 sm:p-2 rounded-lg text-xs font-medium border transition-colors cursor-pointer ${
               settings.peacefulMode
                 ? 'bg-[#00d49a] text-[#0b0f14] border-[#00d49a] shadow-sm'
-                : 'bg-[#151f32] text-[#94a3b8] border-[#22324d] hover:text-white'
+                : 'bg-[#151f32]/90 text-slate-200 border-white/10 hover:text-white'
             }`}
             aria-label="Toggle focus mode"
           >
@@ -136,11 +162,11 @@ export const Navbar: React.FC<NavbarProps> = ({
             type="button"
             onClick={cycleSound}
             title={`Sound: ${settings.sound} (click to cycle)`}
-            className="p-1.5 sm:p-2 rounded-lg bg-[#151f32] text-[#94a3b8] border border-[#22324d] hover:text-white transition-colors cursor-pointer"
+            className="p-1.5 sm:p-2 rounded-lg bg-[#151f32]/90 text-slate-200 border border-white/10 hover:text-white transition-colors cursor-pointer"
             aria-label="Toggle sound mode"
           >
             {settings.sound === 'off' ? (
-              <VolumeX className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#64748b]" />
+              <VolumeX className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-400" />
             ) : (
               <Volume2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#00d49a]" />
             )}
@@ -151,7 +177,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             type="button"
             onClick={cycleTheme}
             title={`Theme: ${settings.theme} (click to cycle)`}
-            className="p-1.5 sm:p-2 rounded-lg bg-[#151f32] text-[#94a3b8] border border-[#22324d] hover:text-white transition-colors cursor-pointer"
+            className="p-1.5 sm:p-2 rounded-lg bg-[#151f32]/90 text-slate-200 border border-white/10 hover:text-white transition-colors cursor-pointer"
             aria-label="Toggle theme"
           >
             {settings.theme === 'dark' && <Moon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#00d49a]" />}

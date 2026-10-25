@@ -18,11 +18,12 @@ import {
   loadSessions,
   recordSession,
 } from './utils/storage';
-import { Navbar } from './components/Navbar';
+import { Navbar, AmbientVibe } from './components/Navbar';
 import { TypingArea } from './components/TypingArea';
 import { Dashboard } from './components/Dashboard';
 import { LessonsOverview } from './components/LessonsOverview';
 import { ResultsModal } from './components/ResultsModal';
+import { GradientBars } from './components/GradientBars';
 import { LEARNING_LEVELS } from './data/lessons';
 import { Award, X } from 'lucide-react';
 
@@ -40,6 +41,24 @@ export default function App() {
   const [completedSession, setCompletedSession] = useState<TypingSession | null>(null);
   const [isPersonalBest, setIsPersonalBest] = useState<boolean>(false);
   const [badgeToast, setBadgeToast] = useState<string | null>(null);
+
+  // Ambient aura state from user reference
+  const [ambientVibe, setAmbientVibe] = useState<AmbientVibe>('sunset');
+
+  const ambientColors: Record<AmbientVibe, string> = {
+    // The exact sunset orange from the user's uploaded 21st.dev reference snippet
+    sunset: 'rgba(255, 60, 0, 0.38)',
+    // The emerald green matching TypeTrack's primary accent
+    emerald: 'rgba(0, 212, 154, 0.35)',
+    // Cyber blue aura
+    cyber: 'rgba(14, 165, 233, 0.35)',
+  };
+
+  const handleCycleAmbientVibe = () => {
+    const vibes: AmbientVibe[] = ['sunset', 'emerald', 'cyber'];
+    const nextIdx = (vibes.indexOf(ambientVibe) + 1) % vibes.length;
+    setAmbientVibe(vibes[nextIdx]);
+  };
 
   // Sync settings with localStorage and theme classes on html/body
   const handleUpdateSettings = (updater: Partial<UserSettings>) => {
@@ -115,13 +134,22 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col bg-[var(--bg-page)] text-[var(--color-text-primary)] transition-colors duration-250 overflow-x-hidden">
+    <div className="min-h-screen min-h-[100dvh] w-full flex flex-col bg-[var(--bg-page)] text-[var(--color-text-primary)] transition-colors duration-250 overflow-x-hidden relative">
+      {/* Animated GradientBars background from user reference */}
+      <GradientBars
+        numBars={15}
+        gradientFrom={ambientColors[ambientVibe]}
+        gradientTo="transparent"
+        animationDuration={2.2}
+      />
+
       {/* Toast notification for newly unlocked milestone */}
       {badgeToast && (
-        <div className="fixed top-20 right-6 z-50 flex items-center gap-3 p-3.5 rounded-xl bg-[#00d49a] text-[#0b0f14] font-bold text-xs shadow-lg animate-in slide-in-from-top-4 duration-300">
+        <div className="fixed top-20 right-6 z-50 flex items-center gap-3 p-3.5 rounded-xl bg-[#00d49a] text-[#0b0f14] font-bold text-xs shadow-2xl animate-in slide-in-from-top-4 duration-300">
           <Award className="w-5 h-5 shrink-0" />
           <span>{badgeToast}</span>
           <button
+            type="button"
             onClick={() => setBadgeToast(null)}
             className="p-1 hover:bg-black/10 rounded-md ml-2 cursor-pointer"
           >
@@ -130,7 +158,7 @@ export default function App() {
         </div>
       )}
 
-      {/* Header Navigation */}
+      {/* Header Navigation with frosted glass blur */}
       {!settings.peacefulMode && (
         <Navbar
           currentTab={currentTab}
@@ -138,11 +166,13 @@ export default function App() {
           settings={settings}
           onUpdateSettings={handleUpdateSettings}
           stats={stats}
+          ambientVibe={ambientVibe}
+          onCycleAmbientVibe={handleCycleAmbientVibe}
         />
       )}
 
-      {/* Main Content Area */}
-      <main className="flex-1 flex flex-col justify-start items-center w-full">
+      {/* Main Content Area sitting above the animated background */}
+      <main className="flex-1 flex flex-col justify-start items-center w-full relative z-10">
         {currentTab === 'practice' && (
           <TypingArea
             settings={settings}
@@ -182,8 +212,9 @@ export default function App() {
       {settings.peacefulMode && (
         <div className="fixed bottom-4 right-4 z-40 opacity-50 hover:opacity-100 transition-opacity">
           <button
+            type="button"
             onClick={() => handleUpdateSettings({ peacefulMode: false })}
-            className="px-3 py-1.5 rounded-lg text-xs bg-[#151f32] text-white font-medium shadow-md border border-[#22324d] cursor-pointer"
+            className="px-3 py-1.5 rounded-lg text-xs bg-[#151f32]/90 backdrop-blur-md text-white font-medium shadow-md border border-white/15 cursor-pointer"
           >
             Exit Peaceful Mode
           </button>

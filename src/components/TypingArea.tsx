@@ -104,7 +104,6 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
 
     const vv = window.visualViewport;
     const checkViewport = () => {
-      // If visual viewport height is noticeably smaller than screen/window height, the virtual keyboard is open
       const isKeyboardOpen = window.innerWidth < 768 && vv.height < window.innerHeight * 0.82;
       setIsMobileKeyboardActive(isKeyboardOpen);
     };
@@ -211,7 +210,7 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
     onFinishSession(session);
   }, [calculateMetrics, elapsedSeconds, activeLesson, mode, timeLimit, wordTarget, errorsCount, onFinishSession]);
 
-  // Check end conditions: Time runs out OR all characters typed
+  // Check end conditions
   useEffect(() => {
     if (status === 'running') {
       if (mode === 'time' && timeRemaining <= 0) {
@@ -295,14 +294,14 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
       variant="practice"
       peacefulMode={settings.peacefulMode}
       onClick={focusInput}
-      className={`${isMobileKeyboardActive ? 'pb-2 pt-2' : ''}`}
+      className={`relative z-10 ${isMobileKeyboardActive ? 'pb-2 pt-2' : ''}`}
     >
       {/* 3. Typing Practice Controls (Hidden in Peaceful Focus Mode) */}
       {!settings.peacefulMode && (
         <div className="mb-3 sm:mb-4">
           <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-3 text-xs font-medium">
-            {/* Left: Mode selector tabs */}
-            <div className="flex items-center gap-1 bg-[#0f1728] p-1 rounded-xl border border-[#1e293b]">
+            {/* Left: Mode selector tabs with light balance */}
+            <div className="flex items-center gap-1 bg-[#0f1728]/85 backdrop-blur-md p-1 rounded-xl border border-white/10 shadow-lg">
               {activeLesson ? (
                 <div className="px-3 py-1.5 rounded-lg bg-[#00d49a] text-[#0b0f14] font-bold flex items-center gap-1.5 shadow-sm">
                   <Sparkles className="w-3.5 h-3.5" />
@@ -318,10 +317,10 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
                       e.stopPropagation();
                       setMode('words');
                     }}
-                    className={`px-2.5 sm:px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
+                    className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
                       mode === 'words'
-                        ? 'bg-[#151f32] text-white shadow-xs font-semibold border border-[#22324d]'
-                        : 'text-[#64748b] hover:text-white'
+                        ? 'bg-white/15 text-white shadow-xs font-bold border border-white/20'
+                        : 'text-slate-300 hover:text-white hover:bg-white/5'
                     }`}
                   >
                     Words
@@ -332,10 +331,10 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
                       e.stopPropagation();
                       setMode('time');
                     }}
-                    className={`px-2.5 sm:px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
+                    className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
                       mode === 'time'
-                        ? 'bg-[#151f32] text-white shadow-xs font-semibold border border-[#22324d]'
-                        : 'text-[#64748b] hover:text-white'
+                        ? 'bg-white/15 text-white shadow-xs font-bold border border-white/20'
+                        : 'text-slate-300 hover:text-white hover:bg-white/5'
                     }`}
                   >
                     Timed
@@ -346,10 +345,10 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
                       e.stopPropagation();
                       setMode('quotes');
                     }}
-                    className={`px-2.5 sm:px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
+                    className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
                       mode === 'quotes'
-                        ? 'bg-[#151f32] text-white shadow-xs font-semibold border border-[#22324d]'
-                        : 'text-[#64748b] hover:text-white'
+                        ? 'bg-white/15 text-white shadow-xs font-bold border border-white/20'
+                        : 'text-slate-300 hover:text-white hover:bg-white/5'
                     }`}
                   >
                     Calm Quotes
@@ -360,10 +359,10 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
                       e.stopPropagation();
                       setIsCustomModalOpen(true);
                     }}
-                    className={`px-2.5 sm:px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
+                    className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
                       mode === 'custom'
-                        ? 'bg-[#151f32] text-white shadow-xs font-semibold border border-[#22324d]'
-                        : 'text-[#64748b] hover:text-white'
+                        ? 'bg-white/15 text-white shadow-xs font-bold border border-white/20'
+                        : 'text-slate-300 hover:text-white hover:bg-white/5'
                     }`}
                   >
                     Custom
@@ -375,7 +374,7 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
             {/* Right: Word-count options, Guide Toggles, and text-size controls */}
             <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
               {!activeLesson && mode === 'words' && (
-                <div className="flex items-center gap-0.5 sm:gap-1 bg-[#0f1728] p-1 rounded-xl border border-[#1e293b]">
+                <div className="flex items-center gap-0.5 sm:gap-1 bg-[#0f1728]/85 backdrop-blur-md p-1 rounded-xl border border-white/10 shadow-lg">
                   {[10, 25, 50, 100].map((w) => (
                     <button
                       key={w}
@@ -384,10 +383,10 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
                         e.stopPropagation();
                         setWordTarget(w);
                       }}
-                      className={`px-2 sm:px-2.5 py-1 rounded-lg text-xs font-mono font-medium transition-colors cursor-pointer ${
+                      className={`px-2.5 py-1 rounded-lg text-xs font-mono font-bold transition-colors cursor-pointer ${
                         wordTarget === w
-                          ? 'bg-[#00d49a] text-[#0b0f14] font-bold shadow-xs'
-                          : 'text-[#64748b] hover:text-white'
+                          ? 'bg-[#00d49a] text-[#0b0f14] shadow-xs'
+                          : 'text-slate-300 hover:text-white hover:bg-white/5'
                       }`}
                     >
                       {w}
@@ -397,7 +396,7 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
               )}
 
               {!activeLesson && mode === 'time' && (
-                <div className="flex items-center gap-0.5 sm:gap-1 bg-[#0f1728] p-1 rounded-xl border border-[#1e293b]">
+                <div className="flex items-center gap-0.5 sm:gap-1 bg-[#0f1728]/85 backdrop-blur-md p-1 rounded-xl border border-white/10 shadow-lg">
                   {[15, 30, 60, 120].map((t) => (
                     <button
                       key={t}
@@ -407,10 +406,10 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
                         setTimeLimit(t);
                         setTimeRemaining(t);
                       }}
-                      className={`px-2 sm:px-2.5 py-1 rounded-lg text-xs font-mono font-medium transition-colors cursor-pointer ${
+                      className={`px-2.5 py-1 rounded-lg text-xs font-mono font-bold transition-colors cursor-pointer ${
                         timeLimit === t
-                          ? 'bg-[#00d49a] text-[#0b0f14] font-bold shadow-xs'
-                          : 'text-[#64748b] hover:text-white'
+                          ? 'bg-[#00d49a] text-[#0b0f14] shadow-xs'
+                          : 'text-slate-300 hover:text-white hover:bg-white/5'
                       }`}
                     >
                       {t}s
@@ -419,17 +418,17 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
                 </div>
               )}
 
-              {/* Requirement 3: Dedicated Toggle Button for Virtual Keyboard with clear dynamic labels */}
+              {/* Requirement 3: Dedicated Toggle Button for Virtual Keyboard */}
               <button
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
                   onUpdateSettings({ showKeyboardGuide: !settings.showKeyboardGuide });
                 }}
-                className={`px-2.5 py-1.5 rounded-xl border text-xs flex items-center gap-1.5 transition-colors cursor-pointer select-none active:scale-95 ${
+                className={`px-2.5 py-1.5 rounded-xl border text-xs flex items-center gap-1.5 transition-colors cursor-pointer select-none active:scale-95 shadow-md ${
                   settings.showKeyboardGuide
-                    ? 'bg-[#00d49a]/10 text-[#00d49a] border-[#00d49a]/30 font-semibold'
-                    : 'bg-[#0f1728] text-[#64748b] border-[#1e293b] hover:text-white'
+                    ? 'bg-[#00d49a]/20 text-[#00d49a] border-[#00d49a]/40 font-bold'
+                    : 'bg-[#0f1728]/85 backdrop-blur-md text-slate-200 border-white/10 hover:text-white hover:border-white/20'
                 }`}
                 aria-pressed={settings.showKeyboardGuide}
                 aria-label={settings.showKeyboardGuide ? 'Hide Keyboard' : 'Show Keyboard'}
@@ -440,17 +439,17 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
                 </span>
               </button>
 
-              {/* Requirement 3: Dedicated Toggle Button for Next-Key Guide with clear dynamic labels */}
+              {/* Requirement 3: Dedicated Toggle Button for Next-Key Guide */}
               <button
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
                   onUpdateSettings({ showHandsGuide: !settings.showHandsGuide });
                 }}
-                className={`px-2.5 py-1.5 rounded-xl border text-xs flex items-center gap-1.5 transition-colors cursor-pointer select-none active:scale-95 ${
+                className={`px-2.5 py-1.5 rounded-xl border text-xs flex items-center gap-1.5 transition-colors cursor-pointer select-none active:scale-95 shadow-md ${
                   settings.showHandsGuide
-                    ? 'bg-[#00d49a]/10 text-[#00d49a] border-[#00d49a]/30 font-semibold'
-                    : 'bg-[#0f1728] text-[#64748b] border-[#1e293b] hover:text-white'
+                    ? 'bg-[#00d49a]/20 text-[#00d49a] border-[#00d49a]/40 font-bold'
+                    : 'bg-[#0f1728]/85 backdrop-blur-md text-slate-200 border-white/10 hover:text-white hover:border-white/20'
                 }`}
                 aria-pressed={settings.showHandsGuide}
                 aria-label={settings.showHandsGuide ? 'Hide Key Guide' : 'Show Key Guide'}
@@ -470,7 +469,7 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
                   const nextSize = sizes[(sizes.indexOf(settings.fontSize) + 1) % sizes.length];
                   onUpdateSettings({ fontSize: nextSize });
                 }}
-                className="p-1.5 rounded-xl bg-[#0f1728] text-[#64748b] border border-[#1e293b] hover:text-white transition-colors cursor-pointer"
+                className="p-1.5 rounded-xl bg-[#0f1728]/85 backdrop-blur-md text-slate-200 border border-white/10 hover:text-white hover:border-white/20 transition-colors cursor-pointer shadow-md"
                 title="Adjust typing text size"
                 aria-label="Adjust font size"
               >
@@ -480,34 +479,34 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
           </div>
 
           {/* Thin horizontal divider */}
-          <div className="border-b border-[#1e293b] my-3 sm:my-4" />
+          <div className="border-b border-white/10 my-3 sm:my-4" />
 
-          {/* Stats Bar: WPM, Accuracy, Elapsed time, and Reset icon aligned right */}
+          {/* Stats Bar with Light Balance: WPM, Accuracy, Elapsed time, and Reset icon */}
           <div className="flex items-center justify-between px-1 text-xs font-medium">
-            <div className="flex items-center gap-5 sm:gap-8">
+            <div className="flex items-center gap-6 sm:gap-9">
               <div>
-                <span className="text-[10px] uppercase font-bold tracking-wider text-[#64748b] block">
+                <span className="text-[11px] uppercase font-bold tracking-wider text-slate-300 block">
                   WPM
                 </span>
-                <span className="font-mono text-lg sm:text-2xl font-bold text-white">
+                <span className="font-mono text-xl sm:text-3xl font-extrabold text-white drop-shadow-sm">
                   {liveMetrics.wpm}
                 </span>
               </div>
 
               <div>
-                <span className="text-[10px] uppercase font-bold tracking-wider text-[#64748b] block">
+                <span className="text-[11px] uppercase font-bold tracking-wider text-slate-300 block">
                   Accuracy
                 </span>
-                <span className="font-mono text-lg sm:text-2xl font-bold text-white">
+                <span className="font-mono text-xl sm:text-3xl font-extrabold text-white drop-shadow-sm">
                   {liveMetrics.accuracy}%
                 </span>
               </div>
 
               <div>
-                <span className="text-[10px] uppercase font-bold tracking-wider text-[#64748b] block">
+                <span className="text-[11px] uppercase font-bold tracking-wider text-slate-300 block">
                   {mode === 'time' ? 'Time Left' : 'Elapsed'}
                 </span>
-                <span className="font-mono text-lg sm:text-2xl font-bold text-white">
+                <span className="font-mono text-xl sm:text-3xl font-extrabold text-white drop-shadow-sm">
                   {mode === 'time' ? `${timeRemaining}s` : `${elapsedSeconds}s`}
                 </span>
               </div>
@@ -522,7 +521,7 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
                     e.stopPropagation();
                     setStatus('paused');
                   }}
-                  className="p-2 rounded-xl bg-[#0f1728] border border-[#1e293b] text-[#64748b] hover:text-white transition-colors cursor-pointer"
+                  className="p-2 rounded-xl bg-[#0f1728]/85 backdrop-blur-md border border-white/10 text-slate-200 hover:text-white transition-colors cursor-pointer shadow-md"
                   title="Pause (Esc)"
                   aria-label="Pause practice"
                 >
@@ -537,7 +536,7 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
                   initializeText();
                   focusInput();
                 }}
-                className="p-2 rounded-xl bg-[#0f1728] border border-[#1e293b] text-[#64748b] hover:text-[#00d49a] hover:border-[#00d49a]/40 transition-colors cursor-pointer active:scale-95"
+                className="p-2 rounded-xl bg-[#0f1728]/85 backdrop-blur-md border border-white/10 text-slate-200 hover:text-[#00d49a] hover:border-[#00d49a]/50 transition-colors cursor-pointer active:scale-95 shadow-md"
                 title="Restart practice (Tab)"
                 aria-label="Restart practice"
               >
@@ -548,14 +547,14 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
         </div>
       )}
 
-      {/* 4. Main Typing Area Card: Large dark navy rounded rectangle with subtle border */}
+      {/* 4. Main Typing Area Card: Frosted dark navy with light balanced text */}
       <div
-        className={`relative min-h-[170px] sm:min-h-[210px] p-4 sm:p-7 rounded-2xl border transition-all duration-300 font-mono cursor-text select-none shadow-xl ${
+        className={`relative min-h-[170px] sm:min-h-[210px] p-5 sm:p-8 rounded-2xl border transition-all duration-300 font-mono cursor-text select-none shadow-2xl ${
           settings.theme === 'dark'
-            ? 'bg-[#0f1728] border-[#1e293b]'
+            ? 'bg-[#0f1728]/90 backdrop-blur-md border-white/15'
             : settings.theme === 'sepia'
-            ? 'bg-[var(--bg-panel)] border-[var(--border-panel)]'
-            : 'bg-white border-slate-200'
+            ? 'bg-[var(--bg-panel)] backdrop-blur-md border-[var(--border-panel)]'
+            : 'bg-white/95 backdrop-blur-md border-slate-200 shadow-xl'
         }`}
       >
         {/*
@@ -581,9 +580,9 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
 
         {/* Paused Overlay */}
         {status === 'paused' && (
-          <div className="absolute inset-0 z-20 rounded-2xl bg-[#0b0f14]/85 backdrop-blur-xs flex flex-col items-center justify-center gap-3 text-white">
+          <div className="absolute inset-0 z-20 rounded-2xl bg-[#0b0f14]/85 backdrop-blur-md flex flex-col items-center justify-center gap-3 text-white">
             <span className="font-sans text-lg font-bold">Practice Paused</span>
-            <p className="text-xs text-[#94a3b8] font-sans">
+            <p className="text-xs text-slate-300 font-sans">
               Press resume or tap to continue your flow
             </p>
             <button
@@ -601,8 +600,8 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
           </div>
         )}
 
-        {/* Status message in upper-right corner */}
-        <div className="absolute top-3 right-4 text-[10px] sm:text-[11px] font-sans text-[#475569] flex items-center gap-1.5 pointer-events-none z-10">
+        {/* Status message in upper-right corner with light readable text */}
+        <div className="absolute top-3.5 right-4 text-[10px] sm:text-[11px] font-sans text-slate-400 flex items-center gap-1.5 pointer-events-none z-10 font-medium">
           {status === 'idle' && userInput.length === 0 ? (
             <>
               <span className="w-1.5 h-1.5 rounded-full bg-[#00d49a] animate-ping"></span>
@@ -617,7 +616,10 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
         {/*
           Text Display Container:
           Constrained scroll container for text lines with smooth internal scrolling.
-          Keeps words completely visible without overflowing behind the mobile keyboard.
+          High-contrast light text balance:
+          - Untyped characters: clear light slate (`text-slate-400`)
+          - Typed characters: pure white (`text-white font-bold drop-shadow-xs`)
+          - Caret: glowing neon emerald (`bg-[#00d49a] shadow-[0_0_12px_#00d49a]`)
         */}
         <div
           ref={textContainerRef}
@@ -639,11 +641,11 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
 
             let charColor = '';
             if (isCorrect) {
-              charColor = 'text-white font-medium';
+              charColor = 'text-white font-bold drop-shadow-xs';
             } else if (isIncorrect) {
-              charColor = 'text-amber-400 bg-amber-500/20 rounded-xs';
+              charColor = 'text-rose-300 bg-rose-500/25 rounded-xs font-semibold';
             } else {
-              charColor = 'text-[#475569]';
+              charColor = 'text-slate-400 font-medium';
             }
 
             return (
@@ -654,7 +656,7 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
               >
                 {/* Thin neon-green blinking caret */}
                 {isCurrent && (
-                  <span className="absolute -left-[1px] inset-y-1 w-[2px] bg-[#00d49a] rounded-full animate-caret shadow-[0_0_8px_#00d49a] z-10" />
+                  <span className="absolute -left-[1px] inset-y-1 w-[2.5px] bg-[#00d49a] rounded-full animate-caret shadow-[0_0_10px_#00d49a] z-10" />
                 )}
 
                 <span className={charColor}>
@@ -668,14 +670,14 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
 
       {/* Active Lesson Guidance Banner */}
       {activeLesson && (
-        <div className="mt-3 p-3 rounded-xl bg-[#00d49a]/10 border border-[#00d49a]/20 text-xs flex items-center justify-between gap-3">
+        <div className="mt-3.5 p-3 rounded-xl bg-[#00d49a]/15 backdrop-blur-md border border-[#00d49a]/30 text-xs flex items-center justify-between gap-3 shadow-md">
           <div className="flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-[#00d49a] shrink-0" />
             <div>
-              <span className="font-semibold text-[#00d49a]">
+              <span className="font-bold text-[#00d49a]">
                 Focus Keys:
               </span>{' '}
-              <span className="text-[#cbd5e1]">
+              <span className="text-slate-200">
                 {activeLesson.exercise.targetKeys.join(', ')} &mdash; {activeLesson.exercise.description}
               </span>
             </div>
@@ -683,18 +685,14 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
           <button
             type="button"
             onClick={onSwitchToLessons}
-            className="text-[#00d49a] hover:underline font-semibold shrink-0 cursor-pointer"
+            className="text-[#00d49a] hover:underline font-bold shrink-0 cursor-pointer"
           >
             All Lessons
           </button>
         </div>
       )}
 
-      {/*
-        5. Next-Key Indicator & 6. Virtual Keyboard:
-        Controlled independently by settings.showHandsGuide and settings.showKeyboardGuide.
-        Completely hidden and vertical space reclaimed when toggled off.
-      */}
+      {/* 5. Next-Key Indicator & 6. Virtual Keyboard */}
       <VirtualKeyboard
         currentKey={nextExpectedChar}
         theme={settings.theme}
@@ -706,13 +704,13 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
       {isCustomModalOpen && (
         <div
           onClick={(e) => e.stopPropagation()}
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
         >
-          <div className="w-full max-w-lg p-6 rounded-2xl bg-[#0f1728] border border-[#1e293b] shadow-2xl space-y-4">
+          <div className="w-full max-w-lg p-6 rounded-2xl bg-[#0f1728] border border-white/15 shadow-2xl space-y-4">
             <h3 className="text-lg font-bold text-white">
               Practice Custom Text
             </h3>
-            <p className="text-xs text-[#94a3b8]">
+            <p className="text-xs text-slate-300">
               Paste an article excerpt, book quote, or notes you want to practice typing.
             </p>
             <textarea
@@ -720,13 +718,13 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
               value={customText}
               onChange={(e) => setCustomText(e.target.value)}
               placeholder="Paste or write your custom text here..."
-              className="w-full p-3 rounded-xl border border-[#22324d] bg-[#151f32] text-sm text-white focus:outline-none focus:border-[#00d49a] font-sans"
+              className="w-full p-3 rounded-xl border border-white/15 bg-[#151f32] text-sm text-white focus:outline-none focus:border-[#00d49a] font-sans"
             />
             <div className="flex justify-end gap-2">
               <button
                 type="button"
                 onClick={() => setIsCustomModalOpen(false)}
-                className="px-4 py-2 rounded-xl text-xs font-medium text-[#94a3b8] hover:bg-[#151f32] cursor-pointer"
+                className="px-4 py-2 rounded-xl text-xs font-medium text-slate-300 hover:bg-[#151f32] cursor-pointer"
               >
                 Cancel
               </button>
@@ -737,7 +735,7 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
                   setIsCustomModalOpen(false);
                   initializeText();
                 }}
-                className="px-4 py-2 rounded-xl text-xs font-bold bg-[#00d49a] text-[#0b0f14] hover:bg-[#00d49a]/90 cursor-pointer shadow-sm shadow-[#00d49a]/30"
+                className="px-4 py-2 rounded-xl text-xs font-bold bg-[#00d49a] text-[#0b0f14] hover:bg-[#00d49a]/90 cursor-pointer shadow-md shadow-[#00d49a]/30"
               >
                 Start Custom Session
               </button>
