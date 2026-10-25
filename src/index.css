@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    user-select: none;
+  }
+}
+
+/* Custom caret animation */
+@keyframes caret-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.animate-caret {
+  animation: caret-pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Theme classes */
+.theme-dark {
+  background-color: #0d1117;
+  color: #e6edf3;
+}
+
+.theme-light {
+  background-color: #faf9f6;
+  color: #1f2937;
+}
+
+.theme-sepia {
+  background-color: #fbf7ee;
+  color: #433422;
+}
+
+/* Smooth transition for theme change */
+body {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(150, 150, 150, 0.2);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(150, 150, 150, 0.4);
+}

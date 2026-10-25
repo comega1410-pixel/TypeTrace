@@ -1,0 +1,6 @@
+{
+  "name": "TypeTrack",
+  "description": "A calm, beginner-friendly typing coach designed to build confidence, improve accuracy, and increase typing speed through guided practice and thoughtful tracking.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

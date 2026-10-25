@@ -1,0 +1,88 @@
+import { Badge } from '../types';
+
+export const ALL_BADGES: Badge[] = [
+  {
+    id: 'first-flight',
+    title: 'First Flight',
+    description: 'Completed your very first typing practice session.',
+    icon: 'Feather',
+    category: 'milestone',
+  },
+  {
+    id: 'home-row-scout',
+    title: 'Home Row Scout',
+    description: 'Mastered the anchor keys (A S D F J K L ;) in Level 1.',
+    icon: 'Compass',
+    category: 'mastery',
+  },
+  {
+    id: 'home-row-pioneer',
+    title: 'Home Row Pioneer',
+    description: 'Unlocked reaching top and middle rows in Level 2.',
+    icon: 'MapPin',
+    category: 'mastery',
+  },
+  {
+    id: 'steady-hands',
+    title: 'Steady Hands',
+    description: 'Maintained 95% or higher accuracy across a full exercise.',
+    icon: 'ShieldCheck',
+    category: 'accuracy',
+  },
+  {
+    id: 'precision-artist',
+    title: 'Precision Artist',
+    description: 'Achieved an extraordinary 98%+ accuracy with at least 20 words.',
+    icon: 'Target',
+    category: 'accuracy',
+  },
+  {
+    id: 'twenty-five-club',
+    title: 'Steady Rhythm (25 WPM)',
+    description: 'Crossed the 25 WPM threshold with confidence.',
+    icon: 'Activity',
+    category: 'speed',
+  },
+  {
+    id: 'forty-wpm',
+    title: 'Fluid Pace (40 WPM)',
+    description: 'Smooth, natural touch typing speed at 40 WPM.',
+    icon: 'Zap',
+    category: 'speed',
+  },
+  {
+    id: 'three-day-streak',
+    title: 'Habit Builder',
+    description: 'Practiced 3 days in a row.',
+    icon: 'Flame',
+    category: 'streak',
+  },
+  {
+    id: 'seven-day-streak',
+    title: 'Mindful Dedication',
+    description: 'Kept the practice flame alive for 7 consecutive days.',
+    icon: 'Sparkles',
+    category: 'streak',
+  },
+  {
+    id: 'thousand-words',
+    title: 'Century Scribe',
+    description: 'Typed over 1,000 words in TypeTrack.',
+    icon: 'BookOpen',
+    category: 'milestone',
+  },
+  {
+    id: 'peaceful-focus',
+    title: 'Zen Practitioner',
+    description: 'Completed a session with Peaceful Focus mode enabled.',
+    icon: 'Moon',
+    category: 'milestone',
+  },
+  {
+    id: 'curriculum-master',
+    title: 'TypeTrack Graduate',
+    description: 'Successfully completed all 8 learning curriculum levels.',
+    icon: 'Award',
+    category: 'mastery',
+  },
+];
