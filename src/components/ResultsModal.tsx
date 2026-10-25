@@ -32,7 +32,7 @@ export const ResultsModal: React.FC<ResultsModalProps> = ({
           particleCount: 50,
           spread: 60,
           origin: { y: 0.6 },
-          colors: ['#10b981', '#3b82f6', '#f59e0b', '#6366f1'],
+          colors: ['#00d49a', '#38bdf8', '#fbbf24', '#818cf8'],
           disableForReducedMotion: true,
         });
       } catch {}
@@ -40,11 +40,11 @@ export const ResultsModal: React.FC<ResultsModalProps> = ({
   }, [isPersonalBest, session.accuracy]);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="w-full max-w-xl rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden p-6 sm:p-8">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="w-full max-w-xl rounded-2xl bg-[#0f1728] border border-[#1e293b] shadow-2xl overflow-hidden p-6 sm:p-8">
         {/* Header with Coach Insight */}
         <div className="text-center mb-6">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 mb-3">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#00d49a]/10 text-[#00d49a] border border-[#00d49a]/30 mb-3">
             {isPersonalBest ? (
               <>
                 <Sparkles className="w-3.5 h-3.5" />
@@ -57,10 +57,10 @@ export const ResultsModal: React.FC<ResultsModalProps> = ({
               </>
             )}
           </div>
-          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
             {coachInsight.headline}
           </h2>
-          <p className="text-sm text-slate-600 dark:text-slate-300 mt-2 max-w-md mx-auto leading-relaxed">
+          <p className="text-sm text-[#cbd5e1] mt-2 max-w-md mx-auto leading-relaxed">
             {coachInsight.advice}
           </p>
         </div>
@@ -68,59 +68,59 @@ export const ResultsModal: React.FC<ResultsModalProps> = ({
         {/* Primary Metrics Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
           {/* WPM */}
-          <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/50 text-center">
-            <span className="text-xs uppercase font-medium tracking-wider text-slate-600 dark:text-slate-400 flex items-center justify-center gap-1">
-              <Zap className="w-3.5 h-3.5 text-amber-500" />
+          <div className="p-4 rounded-xl bg-[#151f32] border border-[#22324d] text-center">
+            <span className="text-xs uppercase font-medium tracking-wider text-[#94a3b8] flex items-center justify-center gap-1">
+              <Zap className="w-3.5 h-3.5 text-amber-400" />
               WPM
             </span>
-            <div className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mt-1">
+            <div className="text-3xl sm:text-4xl font-extrabold text-white mt-1">
               {session.wpm}
             </div>
             {stats.bestWpm > 0 && (
-              <span className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 block">
+              <span className="text-[11px] text-[#64748b] mt-0.5 block">
                 Best: {stats.bestWpm}
               </span>
             )}
           </div>
 
           {/* Accuracy */}
-          <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/50 text-center">
-            <span className="text-xs uppercase font-medium tracking-wider text-slate-600 dark:text-slate-400 flex items-center justify-center gap-1">
-              <Award className="w-3.5 h-3.5 text-emerald-500" />
+          <div className="p-4 rounded-xl bg-[#151f32] border border-[#22324d] text-center">
+            <span className="text-xs uppercase font-medium tracking-wider text-[#94a3b8] flex items-center justify-center gap-1">
+              <Award className="w-3.5 h-3.5 text-[#00d49a]" />
               Accuracy
             </span>
-            <div className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mt-1">
+            <div className="text-3xl sm:text-4xl font-extrabold text-white mt-1">
               {session.accuracy}%
             </div>
-            <span className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 block">
+            <span className="text-[11px] text-[#64748b] mt-0.5 block">
               {session.accuracy >= 95 ? 'Great control' : 'Keep practicing'}
             </span>
           </div>
 
           {/* Time */}
-          <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/50 text-center">
-            <span className="text-xs uppercase font-medium tracking-wider text-slate-600 dark:text-slate-400 flex items-center justify-center gap-1">
-              <Clock className="w-3.5 h-3.5 text-blue-500" />
+          <div className="p-4 rounded-xl bg-[#151f32] border border-[#22324d] text-center">
+            <span className="text-xs uppercase font-medium tracking-wider text-[#94a3b8] flex items-center justify-center gap-1">
+              <Clock className="w-3.5 h-3.5 text-blue-400" />
               Time
             </span>
-            <div className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mt-2">
+            <div className="text-2xl sm:text-3xl font-bold text-white mt-2">
               {session.durationSeconds}s
             </div>
-            <span className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 block">
+            <span className="text-[11px] text-[#64748b] mt-0.5 block">
               {session.wordsCount} words
             </span>
           </div>
 
           {/* Errors */}
-          <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/50 text-center">
-            <span className="text-xs uppercase font-medium tracking-wider text-slate-600 dark:text-slate-400 flex items-center justify-center gap-1">
+          <div className="p-4 rounded-xl bg-[#151f32] border border-[#22324d] text-center">
+            <span className="text-xs uppercase font-medium tracking-wider text-[#94a3b8] flex items-center justify-center gap-1">
               <ShieldAlert className="w-3.5 h-3.5 text-rose-400" />
               Typos
             </span>
-            <div className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mt-2">
+            <div className="text-2xl sm:text-3xl font-bold text-white mt-2">
               {session.errors}
             </div>
-            <span className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 block">
+            <span className="text-[11px] text-[#64748b] mt-0.5 block">
               {session.errors === 0 ? 'Clean run' : 'Natural to make'}
             </span>
           </div>
@@ -128,9 +128,12 @@ export const ResultsModal: React.FC<ResultsModalProps> = ({
 
         {/* Comparison with Average */}
         {stats.sessionsCount > 1 && (
-          <div className="p-3 mb-6 rounded-xl bg-slate-100/70 dark:bg-slate-800/40 text-xs text-slate-600 dark:text-slate-300 flex items-center justify-between border border-slate-200/50 dark:border-slate-700/40">
-            <span>Overall Average: <strong>{stats.avgWpm} WPM</strong> &middot; <strong>{stats.avgAccuracy}% Accuracy</strong></span>
-            <span className="text-emerald-500 font-medium">
+          <div className="p-3 mb-6 rounded-xl bg-[#151f32] text-xs text-[#cbd5e1] flex items-center justify-between border border-[#22324d]">
+            <span>
+              Overall Average: <strong className="text-white">{stats.avgWpm} WPM</strong> &middot;{' '}
+              <strong className="text-white">{stats.avgAccuracy}% Accuracy</strong>
+            </span>
+            <span className="text-[#00d49a] font-semibold">
               {session.wpm >= stats.avgWpm ? `+${session.wpm - stats.avgWpm} above avg` : 'Keep rhythm steady'}
             </span>
           </div>
@@ -140,7 +143,7 @@ export const ResultsModal: React.FC<ResultsModalProps> = ({
         <div className="flex flex-col sm:flex-row gap-2.5">
           <button
             onClick={onRestart}
-            className="flex-1 py-3 px-4 rounded-xl font-medium text-sm flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 active:scale-[0.99] text-white transition-all shadow-sm shadow-emerald-600/20"
+            className="flex-1 py-3 px-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 bg-[#00d49a] hover:bg-[#00d49a]/90 active:scale-[0.99] text-[#0b0f14] transition-all shadow-md shadow-[#00d49a]/20 cursor-pointer"
           >
             <RotateCcw className="w-4 h-4" />
             Practice Again
@@ -149,7 +152,7 @@ export const ResultsModal: React.FC<ResultsModalProps> = ({
           {onNextLesson && (
             <button
               onClick={onNextLesson}
-              className="flex-1 py-3 px-4 rounded-xl font-medium text-sm flex items-center justify-center gap-2 bg-slate-900 dark:bg-slate-700 hover:bg-slate-800 dark:hover:bg-slate-600 active:scale-[0.99] text-white transition-all"
+              className="flex-1 py-3 px-4 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 bg-[#151f32] hover:bg-[#1e2c47] active:scale-[0.99] text-white transition-all border border-[#22324d] cursor-pointer"
             >
               <span>Next Lesson</span>
               <ArrowRight className="w-4 h-4" />
@@ -158,7 +161,7 @@ export const ResultsModal: React.FC<ResultsModalProps> = ({
 
           <button
             onClick={onGoToDashboard}
-            className="py-3 px-4 rounded-xl font-medium text-sm flex items-center justify-center gap-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-all border border-slate-200 dark:border-slate-700"
+            className="py-3 px-4 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 bg-[#151f32] hover:bg-[#1e2c47] text-[#94a3b8] hover:text-white transition-all border border-[#22324d] cursor-pointer"
           >
             <BarChart2 className="w-4 h-4" />
             <span className="hidden sm:inline">Progress</span>

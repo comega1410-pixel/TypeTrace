@@ -24,7 +24,7 @@ import { Dashboard } from './components/Dashboard';
 import { LessonsOverview } from './components/LessonsOverview';
 import { ResultsModal } from './components/ResultsModal';
 import { LEARNING_LEVELS } from './data/lessons';
-import { Sparkles, Award, X } from 'lucide-react';
+import { Award, X } from 'lucide-react';
 
 export default function App() {
   const [settings, setSettings] = useState<UserSettings>(loadSettings);
@@ -99,7 +99,6 @@ export default function App() {
       setCompletedSession(null);
       setCurrentTab('practice');
     } else {
-      // Advance to next level if available
       const nextLevel = LEARNING_LEVELS.find((l) => l.levelNumber === currentLevel.levelNumber + 1);
       if (nextLevel && nextLevel.levelNumber <= stats.unlockedLevel) {
         setActiveLesson({
@@ -109,7 +108,6 @@ export default function App() {
         setCompletedSession(null);
         setCurrentTab('practice');
       } else {
-        // Switch to curriculum overview
         setCompletedSession(null);
         setCurrentTab('lessons');
       }
@@ -117,21 +115,15 @@ export default function App() {
   };
 
   return (
-    <div className={`min-h-screen flex flex-col transition-colors duration-300 ${
-      settings.theme === 'dark'
-        ? 'bg-[#0d1117] text-[#e6edf3]'
-        : settings.theme === 'sepia'
-        ? 'bg-[#fbf7ee] text-[#433422]'
-        : 'bg-[#faf9f6] text-[#1f2937]'
-    }`}>
+    <div className="min-h-screen w-full flex flex-col bg-[var(--bg-page)] text-[var(--color-text-primary)] transition-colors duration-250 overflow-x-hidden">
       {/* Toast notification for newly unlocked milestone */}
       {badgeToast && (
-        <div className="fixed top-20 right-6 z-50 flex items-center gap-3 p-3.5 rounded-xl bg-amber-500 text-slate-950 font-bold text-xs shadow-lg animate-in slide-in-from-top-4 duration-300">
+        <div className="fixed top-20 right-6 z-50 flex items-center gap-3 p-3.5 rounded-xl bg-[#00d49a] text-[#0b0f14] font-bold text-xs shadow-lg animate-in slide-in-from-top-4 duration-300">
           <Award className="w-5 h-5 shrink-0" />
           <span>{badgeToast}</span>
           <button
             onClick={() => setBadgeToast(null)}
-            className="p-1 hover:bg-black/10 rounded-md ml-2"
+            className="p-1 hover:bg-black/10 rounded-md ml-2 cursor-pointer"
           >
             <X className="w-3.5 h-3.5" />
           </button>
@@ -150,7 +142,7 @@ export default function App() {
       )}
 
       {/* Main Content Area */}
-      <main className="flex-1 flex flex-col justify-center items-center">
+      <main className="flex-1 flex flex-col justify-start items-center w-full">
         {currentTab === 'practice' && (
           <TypingArea
             settings={settings}
@@ -172,7 +164,7 @@ export default function App() {
           <Dashboard
             stats={stats}
             sessions={sessions}
-            onStartPractice={(m) => {
+            onStartPractice={() => {
               setActiveLesson(null);
               setCurrentTab('practice');
             }}
@@ -188,10 +180,10 @@ export default function App() {
 
       {/* Peaceful Mode Exit Button in Corner */}
       {settings.peacefulMode && (
-        <div className="fixed bottom-4 right-4 z-40 opacity-40 hover:opacity-100 transition-opacity">
+        <div className="fixed bottom-4 right-4 z-40 opacity-50 hover:opacity-100 transition-opacity">
           <button
             onClick={() => handleUpdateSettings({ peacefulMode: false })}
-            className="px-3 py-1.5 rounded-lg text-xs bg-slate-800 text-white font-medium shadow-md border border-slate-700"
+            className="px-3 py-1.5 rounded-lg text-xs bg-[#151f32] text-white font-medium shadow-md border border-[#22324d] cursor-pointer"
           >
             Exit Peaceful Mode
           </button>

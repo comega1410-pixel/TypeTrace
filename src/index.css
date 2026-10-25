@@ -4,6 +4,24 @@
   :root {
     --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
+
+    /* Global semantic theme variables */
+    --bg-page: #0b0f14;
+    --bg-panel: #0f1728;
+    --border-panel: #1e293b;
+    --color-text-primary: #f1f5f9;
+    --color-text-secondary: #94a3b8;
+    --color-text-muted: #64748b;
+    --color-text-dim: #475569;
+    --color-accent: #00d49a;
+    --color-accent-subtle: rgba(0, 212, 154, 0.12);
+    --color-accent-border: rgba(0, 212, 154, 0.3);
+
+    --key-bg: #151f32;
+    --key-border: #22324d;
+    --key-text: #cbd5e1;
+    --key-bump: #64748b;
+    --theme-icon-sepia: #8b6f47;
   }
 
   body {
@@ -11,10 +29,17 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     user-select: none;
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg-page);
+    color: var(--color-text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+    transition: background-color 0.25s ease, color 0.25s ease;
   }
 }
 
-/* Custom caret animation */
+/* Caret animation */
 @keyframes caret-pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
@@ -24,25 +49,63 @@
   animation: caret-pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-/* Theme classes */
+/* Theme definitions */
 .theme-dark {
-  background-color: #0d1117;
-  color: #e6edf3;
+  --bg-page: #0b0f14;
+  --bg-panel: #0f1728;
+  --border-panel: #1e293b;
+  --color-text-primary: #f1f5f9;
+  --color-text-secondary: #94a3b8;
+  --color-text-muted: #64748b;
+  --color-text-dim: #475569;
+  --color-accent: #00d49a;
+  --color-accent-subtle: rgba(0, 212, 154, 0.12);
+  --color-accent-border: rgba(0, 212, 154, 0.3);
+  --key-bg: #151f32;
+  --key-border: #22324d;
+  --key-text: #cbd5e1;
+  --key-bump: #64748b;
+  background-color: var(--bg-page);
+  color: var(--color-text-primary);
 }
 
 .theme-light {
-  background-color: #faf9f6;
-  color: #1f2937;
+  --bg-page: #faf9f6;
+  --bg-panel: #ffffff;
+  --border-panel: #e2e8f0;
+  --color-text-primary: #1f2937;
+  --color-text-secondary: #4b5563;
+  --color-text-muted: #6b7280;
+  --color-text-dim: #9ca3af;
+  --color-accent: #00d49a;
+  --color-accent-subtle: rgba(0, 212, 154, 0.12);
+  --color-accent-border: rgba(0, 212, 154, 0.3);
+  --key-bg: #f1f5f9;
+  --key-border: #cbd5e1;
+  --key-text: #334155;
+  --key-bump: #94a3b8;
+  background-color: var(--bg-page);
+  color: var(--color-text-primary);
 }
 
 .theme-sepia {
-  background-color: #fbf7ee;
-  color: #433422;
-}
-
-/* Smooth transition for theme change */
-body {
-  transition: background-color 0.3s ease, color 0.3s ease;
+  --bg-page: #fbf7ee;
+  --bg-panel: #f5efe2;
+  --border-panel: #e4dcce;
+  --color-text-primary: #433422;
+  --color-text-secondary: #6e583e;
+  --color-text-muted: #8b6f47;
+  --color-text-dim: #988876;
+  --color-accent: #00a87a;
+  --color-accent-subtle: rgba(0, 168, 122, 0.14);
+  --color-accent-border: rgba(0, 168, 122, 0.35);
+  --key-bg: #e9e1d1;
+  --key-border: #d8cdbc;
+  --key-text: #4a3f35;
+  --key-bump: #988876;
+  --theme-icon-sepia: #8b6f47;
+  background-color: var(--bg-page);
+  color: var(--color-text-primary);
 }
 
 /* Custom scrollbars */
@@ -54,9 +117,9 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(150, 150, 150, 0.2);
+  background: rgba(100, 116, 139, 0.25);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(150, 150, 150, 0.4);
+  background: rgba(100, 116, 139, 0.45);
 }

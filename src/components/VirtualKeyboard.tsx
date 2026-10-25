@@ -29,11 +29,11 @@ const KEY_LAYOUT: KeyConfig[][] = [
     { key: '0', finger: 'R-Pinky' },
     { key: '-', finger: 'R-Pinky' },
     { key: '=', finger: 'R-Pinky' },
-    { key: 'Backspace', display: 'delete', finger: 'R-Pinky', width: 'w-16' },
+    { key: 'Backspace', display: 'delete', finger: 'R-Pinky', width: 'w-14 sm:w-16' },
   ],
   // Top row
   [
-    { key: 'Tab', display: 'tab', finger: 'L-Pinky', width: 'w-14' },
+    { key: 'Tab', display: 'tab', finger: 'L-Pinky', width: 'w-12 sm:w-14' },
     { key: 'q', finger: 'L-Pinky' },
     { key: 'w', finger: 'L-Ring' },
     { key: 'e', finger: 'L-Middle' },
@@ -50,7 +50,7 @@ const KEY_LAYOUT: KeyConfig[][] = [
   ],
   // Home row
   [
-    { key: 'CapsLock', display: 'caps', finger: 'L-Pinky', width: 'w-16' },
+    { key: 'CapsLock', display: 'caps', finger: 'L-Pinky', width: 'w-14 sm:w-16' },
     { key: 'a', finger: 'L-Pinky' },
     { key: 's', finger: 'L-Ring' },
     { key: 'd', finger: 'L-Middle' },
@@ -62,11 +62,11 @@ const KEY_LAYOUT: KeyConfig[][] = [
     { key: 'l', finger: 'R-Ring' },
     { key: ';', finger: 'R-Pinky' },
     { key: "'", finger: 'R-Pinky' },
-    { key: 'Enter', display: 'return', finger: 'R-Pinky', width: 'w-16' },
+    { key: 'Enter', display: 'return', finger: 'R-Pinky', width: 'w-14 sm:w-16' },
   ],
   // Bottom row
   [
-    { key: 'ShiftLeft', display: 'shift', finger: 'L-Pinky', width: 'w-20' },
+    { key: 'ShiftLeft', display: 'shift', finger: 'L-Pinky', width: 'w-16 sm:w-20' },
     { key: 'z', finger: 'L-Pinky' },
     { key: 'x', finger: 'L-Ring' },
     { key: 'c', finger: 'L-Middle' },
@@ -77,13 +77,13 @@ const KEY_LAYOUT: KeyConfig[][] = [
     { key: ',', finger: 'R-Middle' },
     { key: '.', finger: 'R-Ring' },
     { key: '/', finger: 'R-Pinky' },
-    { key: 'ShiftRight', display: 'shift', finger: 'R-Pinky', width: 'w-20' },
+    { key: 'ShiftRight', display: 'shift', finger: 'R-Pinky', width: 'w-16 sm:w-20' },
   ],
   // Space row
   [
     { key: 'Control', display: 'ctrl', finger: 'L-Pinky', width: 'w-12' },
     { key: 'Alt', display: 'alt', finger: 'L-Pinky', width: 'w-12' },
-    { key: ' ', display: 'space', finger: 'Thumb', width: 'flex-1 max-w-md' },
+    { key: ' ', display: 'space', finger: 'Thumb', width: 'flex-1 max-w-sm sm:max-w-md' },
     { key: 'AltGraph', display: 'alt', finger: 'R-Pinky', width: 'w-12' },
     { key: 'ControlRight', display: 'ctrl', finger: 'R-Pinky', width: 'w-12' },
   ],
@@ -98,7 +98,7 @@ const FINGER_NAMES: Record<KeyConfig['finger'], string> = {
   'R-Middle': 'Right Middle finger',
   'R-Ring': 'Right Ring finger',
   'R-Pinky': 'Right Pinky',
-  'Thumb': 'Right or Left Thumb',
+  'Thumb': 'Thumb',
 };
 
 export const VirtualKeyboard: React.FC<VirtualKeyboardProps> = ({
@@ -126,25 +126,32 @@ export const VirtualKeyboard: React.FC<VirtualKeyboardProps> = ({
   const isSepia = theme === 'sepia';
 
   return (
-    <div className="w-full max-w-4xl mx-auto select-none mt-6 transition-all duration-300">
-      {/* Finger guide hint */}
+    <div className="w-full max-w-[864px] mx-auto select-none mt-5 space-y-3 transition-all duration-300">
+      {/* 5. Next-key indicator: centered dark green status bar with thin green border */}
       {showHandsGuide && currentKey && activeFinger && (
-        <div className="flex items-center justify-between px-3 py-1.5 mb-2 text-xs font-medium rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 max-w-md mx-auto">
+        <div className="flex items-center justify-between px-4 py-2 text-xs font-medium rounded-xl bg-[#00d49a]/10 text-[#00d49a] border border-[#00d49a]/30 max-w-md mx-auto shadow-sm">
           <div className="flex items-center gap-2">
-            <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span>Next Key: <strong className="font-mono text-sm underline">{currentKey === ' ' ? 'Space' : currentKey}</strong></span>
+            <span className="inline-block w-2 h-2 rounded-full bg-[#00d49a] animate-pulse"></span>
+            <span>
+              Next Key:{' '}
+              <strong className="font-mono text-sm underline font-bold">
+                {currentKey === ' ' ? 'Space' : currentKey}
+              </strong>
+            </span>
           </div>
-          <span className="text-emerald-300/90 font-normal">Use: <strong>{FINGER_NAMES[activeFinger]}</strong></span>
+          <span className="font-normal text-[#00d49a]/90">
+            Use: <strong>{FINGER_NAMES[activeFinger]}</strong>
+          </span>
         </div>
       )}
 
-      {/* Keyboard Container */}
+      {/* 6. Virtual Keyboard Container */}
       <div
-        className={`p-3 sm:p-4 rounded-2xl border transition-colors shadow-sm ${
+        className={`p-3 sm:p-4 rounded-2xl border transition-colors shadow-lg ${
           isDark
-            ? 'bg-slate-900/80 border-slate-800'
+            ? 'bg-[#0f1728] border-[#1e293b]'
             : isSepia
-            ? 'bg-[#f4efe4] border-[#e2d9c8]'
+            ? 'bg-[var(--bg-panel)] border-[var(--border-panel)]'
             : 'bg-white border-slate-200'
         }`}
       >
@@ -158,22 +165,30 @@ export const VirtualKeyboard: React.FC<VirtualKeyboardProps> = ({
 
                 const isHomeRowAnchor = item.key === 'f' || item.key === 'j';
 
-                let keyClasses = 'h-9 sm:h-10 text-xs sm:text-sm font-medium rounded-lg flex flex-col items-center justify-center transition-all duration-150 relative ';
+                let keyClasses =
+                  'h-8 sm:h-9 md:h-10 text-xs font-medium rounded-lg flex flex-col items-center justify-center transition-all duration-150 relative ';
 
                 if (item.width) {
                   keyClasses += item.width + ' ';
                 } else {
-                  keyClasses += 'w-8 sm:w-10 ';
+                  keyClasses += 'w-7 sm:w-8 md:w-10 ';
                 }
 
                 if (isTarget) {
-                  keyClasses += 'bg-emerald-500 text-white shadow-md shadow-emerald-500/20 scale-105 z-10 border-emerald-400 font-bold';
+                  // Bright neon-green highlight for selected key
+                  keyClasses +=
+                    'bg-[#00d49a] text-[#0b0f14] shadow-md shadow-[#00d49a]/30 scale-105 z-10 border border-[#00d49a] font-bold';
                 } else if (isDark) {
-                  keyClasses += 'bg-slate-800/90 text-slate-300 border border-slate-700/60 hover:border-slate-600';
+                  // Dark blue-gray keys with subtle borders and light gray key labels
+                  keyClasses +=
+                    'bg-[#151f32] text-[#cbd5e1] border border-[#22324d] hover:border-[#334668]';
                 } else if (isSepia) {
-                  keyClasses += 'bg-[#e9e1d1] text-[#4a3f35] border border-[#d8cdbc] hover:border-[#b8aa96]';
+                  // Use theme variable classes instead of arbitrary colors (resolving Issue 2)
+                  keyClasses +=
+                    'bg-[var(--key-bg)] text-[var(--key-text)] border border-[var(--key-border)] hover:opacity-90';
                 } else {
-                  keyClasses += 'bg-slate-100 text-slate-700 border border-slate-200 hover:border-slate-300';
+                  keyClasses +=
+                    'bg-slate-100 text-slate-700 border border-slate-200 hover:border-slate-300';
                 }
 
                 return (
@@ -182,9 +197,15 @@ export const VirtualKeyboard: React.FC<VirtualKeyboardProps> = ({
 
                     {/* Raised tactile bump dot on F and J */}
                     {isHomeRowAnchor && !isTarget && (
-                      <span className={`w-3 h-0.5 rounded-full absolute bottom-1.5 ${
-                        isDark ? 'bg-slate-500' : isSepia ? 'bg-[#988876]' : 'bg-slate-400'
-                      }`} />
+                      <span
+                        className={`w-3 h-0.5 rounded-full absolute bottom-1 ${
+                          isDark
+                            ? 'bg-[#64748b]'
+                            : isSepia
+                            ? 'bg-[var(--key-bump)]'
+                            : 'bg-slate-400'
+                        }`}
+                      />
                     )}
                   </div>
                 );
@@ -194,12 +215,16 @@ export const VirtualKeyboard: React.FC<VirtualKeyboardProps> = ({
         </div>
 
         {/* Hand reference footer */}
-        <div className="flex items-center justify-between text-[11px] text-slate-500 mt-3 pt-2 border-t border-slate-500/10 px-2">
+        <div className="flex items-center justify-between text-[11px] text-[#64748b] mt-3 pt-2.5 border-t border-[#1e293b]/70 px-2">
           <div className="flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-            <span>Home row anchors: <strong>F</strong> (Left Index) & <strong>J</strong> (Right Index)</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#00d49a]"></span>
+            <span>
+              Home row anchors: <strong>F</strong> (Left Index) & <strong>J</strong> (Right Index)
+            </span>
           </div>
-          <span className="hidden sm:inline text-slate-400">Rest fingers gently & keep wrists elevated</span>
+          <span className="hidden sm:inline text-[#475569]">
+            Rest fingers gently & keep wrists elevated
+          </span>
         </div>
       </div>
     </div>
