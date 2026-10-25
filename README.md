@@ -26,7 +26,12 @@
   - Interactive SVG progression charts for WPM and accuracy trends.
   - Daily practice streaks and 12 collectible milestone badges.
 - **Personalized Post-Session Coach Insights**: Encouraging tips and personalized next-step suggestions based on your speed, accuracy, and flow.
-- **Theme & Typography Customization**: Dark, Light, and Warm Sepia themes with comfortable, responsive typography.
+- **Dynamic Animated Ambient Equalizer**: Integrated glowing gradient equalizer bars (`GradientBars`) pulsing in the background with customizable aura vibes (Sunset Blaze, Emerald Focus, Cyber Glow) and frosted glass panels (`backdrop-blur-md`).
+- **Optimized Mobile Typing Engine**:
+  - Auto-scroll lock prevention: eliminates jerky page jumping on mobile devices.
+  - Native software keyboard viewport adaptation with sticky active line alignment.
+  - Toggle controls: independent `Show/Hide Keyboard` and `Show/Hide Key Guide` buttons to maximize typing area on smaller screens.
+- **Theme & Typography Customization**: Dark Navy with bright emerald `#00d49a` neon accents, comfortable font scaling, and high-contrast light typography.
 
 ---
 
