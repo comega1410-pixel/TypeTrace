@@ -15,6 +15,7 @@ import {
   Pause,
   Play,
   Keyboard,
+  Compass,
   Sparkles,
   Type,
 } from 'lucide-react';
@@ -49,9 +50,15 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
   const [elapsedSeconds, setElapsedSeconds] = useState<number>(0);
   const [errorsCount, setErrorsCount] = useState<number>(0);
 
-  // Hidden input element ref to capture keyboard on desktop & mobile
+  // Mobile virtual keyboard detection state via visualViewport
+  const [isMobileKeyboardActive, setIsMobileKeyboardActive] = useState<boolean>(false);
+
+  // Refs for element focus and smooth internal line scrolling
   const inputRef = useRef<HTMLInputElement>(null);
   const timerIntervalRef = useRef<number | null>(null);
+  const textContainerRef = useRef<HTMLDivElement>(null);
+  const activeCharRef = useRef<HTMLSpanElement>(null);
+  const isUserTouchingRef = useRef<boolean>(false);
 
   // Initialize or reset text when mode, lesson, or targets change
   const initializeText = useCallback(() => {
@@ -80,16 +87,41 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
     if (mode === 'time') {
       setTimeRemaining(timeLimit);
     }
+
+    // Reset container scroll position
+    if (textContainerRef.current) {
+      textContainerRef.current.scrollTop = 0;
+    }
   }, [mode, activeLesson, timeLimit, wordTarget, customText]);
 
   useEffect(() => {
     initializeText();
   }, [initializeText]);
 
-  // Focus input automatically on click anywhere in typing area
+  // Mobile visualViewport detection: adapts layout when phone's native keyboard opens/closes
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.visualViewport) return;
+
+    const vv = window.visualViewport;
+    const checkViewport = () => {
+      // If visual viewport height is noticeably smaller than screen/window height, the virtual keyboard is open
+      const isKeyboardOpen = window.innerWidth < 768 && vv.height < window.innerHeight * 0.82;
+      setIsMobileKeyboardActive(isKeyboardOpen);
+    };
+
+    vv.addEventListener('resize', checkViewport);
+    vv.addEventListener('scroll', checkViewport);
+
+    return () => {
+      vv.removeEventListener('resize', checkViewport);
+      vv.removeEventListener('scroll', checkViewport);
+    };
+  }, []);
+
+  // Safe input focus that prevents document-level auto-scrolling
   const focusInput = () => {
     if (status !== 'finished') {
-      inputRef.current?.focus();
+      inputRef.current?.focus({ preventScroll: true });
     }
   };
 
@@ -190,6 +222,25 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
     }
   }, [timeRemaining, userInput.length, targetText.length, status, mode, finishSession]);
 
+  // Internal text line scrolling: keeps active line visible strictly inside text container WITHOUT window scrolling
+  useEffect(() => {
+    if (isUserTouchingRef.current) return;
+    if (!activeCharRef.current || !textContainerRef.current) return;
+
+    const container = textContainerRef.current;
+    const charEl = activeCharRef.current;
+
+    const charOffsetTop = charEl.offsetTop - container.offsetTop;
+    const currentScroll = container.scrollTop;
+    const containerHeight = container.clientHeight;
+
+    // Only scroll the internal text box if active character moves outside comfortable view window
+    if (charOffsetTop < currentScroll || charOffsetTop > currentScroll + containerHeight - 48) {
+      const targetScroll = Math.max(0, charOffsetTop - Math.floor(containerHeight / 3));
+      container.scrollTo({ top: targetScroll, behavior: 'smooth' });
+    }
+  }, [userInput.length]);
+
   // Handle Keystrokes
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Tab') {
@@ -233,10 +284,10 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
 
   // Font size styling
   const fontSizeClasses = {
-    sm: 'text-lg sm:text-xl leading-relaxed',
-    base: 'text-xl sm:text-2xl leading-relaxed',
-    lg: 'text-2xl sm:text-[26px] md:text-[28px] leading-relaxed tracking-wide',
-    xl: 'text-3xl sm:text-4xl leading-loose tracking-wide',
+    sm: 'text-base sm:text-lg leading-relaxed',
+    base: 'text-lg sm:text-xl md:text-2xl leading-relaxed',
+    lg: 'text-xl sm:text-2xl md:text-[28px] leading-relaxed tracking-wide',
+    xl: 'text-2xl sm:text-3xl md:text-4xl leading-loose tracking-wide',
   }[settings.fontSize];
 
   return (
@@ -244,26 +295,12 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
       variant="practice"
       peacefulMode={settings.peacefulMode}
       onClick={focusInput}
+      className={`${isMobileKeyboardActive ? 'pb-2 pt-2' : ''}`}
     >
-      {/* Hidden input field for focused keyboard capture */}
-      <input
-        ref={inputRef}
-        type="text"
-        autoFocus
-        value={userInput}
-        onChange={handleInputChange}
-        onKeyDown={handleKeyDown}
-        className="opacity-0 absolute -top-[9999px] left-0 pointer-events-none"
-        autoCapitalize="none"
-        autoCorrect="off"
-        autoComplete="off"
-        spellCheck="false"
-      />
-
       {/* 3. Typing Practice Controls (Hidden in Peaceful Focus Mode) */}
       {!settings.peacefulMode && (
-        <div className="mb-4">
-          <div className="flex flex-wrap items-center justify-between gap-3 text-xs font-medium">
+        <div className="mb-3 sm:mb-4">
+          <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-3 text-xs font-medium">
             {/* Left: Mode selector tabs */}
             <div className="flex items-center gap-1 bg-[#0f1728] p-1 rounded-xl border border-[#1e293b]">
               {activeLesson ? (
@@ -276,8 +313,12 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
               ) : (
                 <>
                   <button
-                    onClick={() => setMode('words')}
-                    className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setMode('words');
+                    }}
+                    className={`px-2.5 sm:px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
                       mode === 'words'
                         ? 'bg-[#151f32] text-white shadow-xs font-semibold border border-[#22324d]'
                         : 'text-[#64748b] hover:text-white'
@@ -286,8 +327,12 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
                     Words
                   </button>
                   <button
-                    onClick={() => setMode('time')}
-                    className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setMode('time');
+                    }}
+                    className={`px-2.5 sm:px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
                       mode === 'time'
                         ? 'bg-[#151f32] text-white shadow-xs font-semibold border border-[#22324d]'
                         : 'text-[#64748b] hover:text-white'
@@ -296,8 +341,12 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
                     Timed
                   </button>
                   <button
-                    onClick={() => setMode('quotes')}
-                    className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setMode('quotes');
+                    }}
+                    className={`px-2.5 sm:px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
                       mode === 'quotes'
                         ? 'bg-[#151f32] text-white shadow-xs font-semibold border border-[#22324d]'
                         : 'text-[#64748b] hover:text-white'
@@ -306,8 +355,12 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
                     Calm Quotes
                   </button>
                   <button
-                    onClick={() => setIsCustomModalOpen(true)}
-                    className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsCustomModalOpen(true);
+                    }}
+                    className={`px-2.5 sm:px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
                       mode === 'custom'
                         ? 'bg-[#151f32] text-white shadow-xs font-semibold border border-[#22324d]'
                         : 'text-[#64748b] hover:text-white'
@@ -319,15 +372,19 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
               )}
             </div>
 
-            {/* Right: Word-count options, Guide, and text-size controls */}
-            <div className="flex items-center gap-2">
+            {/* Right: Word-count options, Guide Toggles, and text-size controls */}
+            <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
               {!activeLesson && mode === 'words' && (
-                <div className="flex items-center gap-1 bg-[#0f1728] p-1 rounded-xl border border-[#1e293b]">
+                <div className="flex items-center gap-0.5 sm:gap-1 bg-[#0f1728] p-1 rounded-xl border border-[#1e293b]">
                   {[10, 25, 50, 100].map((w) => (
                     <button
                       key={w}
-                      onClick={() => setWordTarget(w)}
-                      className={`px-2.5 py-1 rounded-lg text-xs font-mono font-medium transition-colors cursor-pointer ${
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setWordTarget(w);
+                      }}
+                      className={`px-2 sm:px-2.5 py-1 rounded-lg text-xs font-mono font-medium transition-colors cursor-pointer ${
                         wordTarget === w
                           ? 'bg-[#00d49a] text-[#0b0f14] font-bold shadow-xs'
                           : 'text-[#64748b] hover:text-white'
@@ -340,15 +397,17 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
               )}
 
               {!activeLesson && mode === 'time' && (
-                <div className="flex items-center gap-1 bg-[#0f1728] p-1 rounded-xl border border-[#1e293b]">
+                <div className="flex items-center gap-0.5 sm:gap-1 bg-[#0f1728] p-1 rounded-xl border border-[#1e293b]">
                   {[15, 30, 60, 120].map((t) => (
                     <button
                       key={t}
-                      onClick={() => {
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
                         setTimeLimit(t);
                         setTimeRemaining(t);
                       }}
-                      className={`px-2.5 py-1 rounded-lg text-xs font-mono font-medium transition-colors cursor-pointer ${
+                      className={`px-2 sm:px-2.5 py-1 rounded-lg text-xs font-mono font-medium transition-colors cursor-pointer ${
                         timeLimit === t
                           ? 'bg-[#00d49a] text-[#0b0f14] font-bold shadow-xs'
                           : 'text-[#64748b] hover:text-white'
@@ -360,29 +419,60 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
                 </div>
               )}
 
-              {/* Guide Toggle */}
+              {/* Requirement 3: Dedicated Toggle Button for Virtual Keyboard with clear dynamic labels */}
               <button
-                onClick={() => onUpdateSettings({ showKeyboardGuide: !settings.showKeyboardGuide })}
-                className={`px-2.5 py-1.5 rounded-xl border text-xs flex items-center gap-1.5 transition-colors cursor-pointer ${
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onUpdateSettings({ showKeyboardGuide: !settings.showKeyboardGuide });
+                }}
+                className={`px-2.5 py-1.5 rounded-xl border text-xs flex items-center gap-1.5 transition-colors cursor-pointer select-none active:scale-95 ${
                   settings.showKeyboardGuide
                     ? 'bg-[#00d49a]/10 text-[#00d49a] border-[#00d49a]/30 font-semibold'
                     : 'bg-[#0f1728] text-[#64748b] border-[#1e293b] hover:text-white'
                 }`}
-                title="Toggle On-screen Keyboard Guide"
+                aria-pressed={settings.showKeyboardGuide}
+                aria-label={settings.showKeyboardGuide ? 'Hide Keyboard' : 'Show Keyboard'}
               >
-                <Keyboard className="w-3.5 h-3.5" />
-                <span>Guide</span>
+                <Keyboard className="w-3.5 h-3.5 shrink-0" />
+                <span className="whitespace-nowrap">
+                  {settings.showKeyboardGuide ? 'Hide Keyboard' : 'Show Keyboard'}
+                </span>
+              </button>
+
+              {/* Requirement 3: Dedicated Toggle Button for Next-Key Guide with clear dynamic labels */}
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onUpdateSettings({ showHandsGuide: !settings.showHandsGuide });
+                }}
+                className={`px-2.5 py-1.5 rounded-xl border text-xs flex items-center gap-1.5 transition-colors cursor-pointer select-none active:scale-95 ${
+                  settings.showHandsGuide
+                    ? 'bg-[#00d49a]/10 text-[#00d49a] border-[#00d49a]/30 font-semibold'
+                    : 'bg-[#0f1728] text-[#64748b] border-[#1e293b] hover:text-white'
+                }`}
+                aria-pressed={settings.showHandsGuide}
+                aria-label={settings.showHandsGuide ? 'Hide Key Guide' : 'Show Key Guide'}
+              >
+                <Compass className="w-3.5 h-3.5 shrink-0" />
+                <span className="whitespace-nowrap">
+                  {settings.showHandsGuide ? 'Hide Key Guide' : 'Show Key Guide'}
+                </span>
               </button>
 
               {/* Text Size Control */}
               <button
-                onClick={() => {
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
                   const sizes: UserSettings['fontSize'][] = ['base', 'lg', 'xl'];
                   const nextSize = sizes[(sizes.indexOf(settings.fontSize) + 1) % sizes.length];
                   onUpdateSettings({ fontSize: nextSize });
                 }}
                 className="p-1.5 rounded-xl bg-[#0f1728] text-[#64748b] border border-[#1e293b] hover:text-white transition-colors cursor-pointer"
                 title="Adjust typing text size"
+                aria-label="Adjust font size"
               >
                 <Type className="w-4 h-4" />
               </button>
@@ -390,16 +480,16 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
           </div>
 
           {/* Thin horizontal divider */}
-          <div className="border-b border-[#1e293b] my-4" />
+          <div className="border-b border-[#1e293b] my-3 sm:my-4" />
 
           {/* Stats Bar: WPM, Accuracy, Elapsed time, and Reset icon aligned right */}
           <div className="flex items-center justify-between px-1 text-xs font-medium">
-            <div className="flex items-center gap-6 sm:gap-8">
+            <div className="flex items-center gap-5 sm:gap-8">
               <div>
                 <span className="text-[10px] uppercase font-bold tracking-wider text-[#64748b] block">
                   WPM
                 </span>
-                <span className="font-mono text-xl sm:text-2xl font-bold text-white">
+                <span className="font-mono text-lg sm:text-2xl font-bold text-white">
                   {liveMetrics.wpm}
                 </span>
               </div>
@@ -408,7 +498,7 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
                 <span className="text-[10px] uppercase font-bold tracking-wider text-[#64748b] block">
                   Accuracy
                 </span>
-                <span className="font-mono text-xl sm:text-2xl font-bold text-white">
+                <span className="font-mono text-lg sm:text-2xl font-bold text-white">
                   {liveMetrics.accuracy}%
                 </span>
               </div>
@@ -417,7 +507,7 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
                 <span className="text-[10px] uppercase font-bold tracking-wider text-[#64748b] block">
                   {mode === 'time' ? 'Time Left' : 'Elapsed'}
                 </span>
-                <span className="font-mono text-xl sm:text-2xl font-bold text-white">
+                <span className="font-mono text-lg sm:text-2xl font-bold text-white">
                   {mode === 'time' ? `${timeRemaining}s` : `${elapsedSeconds}s`}
                 </span>
               </div>
@@ -427,25 +517,29 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
             <div className="flex items-center gap-2">
               {status === 'running' && (
                 <button
+                  type="button"
                   onClick={(e) => {
                     e.stopPropagation();
                     setStatus('paused');
                   }}
                   className="p-2 rounded-xl bg-[#0f1728] border border-[#1e293b] text-[#64748b] hover:text-white transition-colors cursor-pointer"
                   title="Pause (Esc)"
+                  aria-label="Pause practice"
                 >
                   <Pause className="w-4 h-4" />
                 </button>
               )}
 
               <button
+                type="button"
                 onClick={(e) => {
                   e.stopPropagation();
                   initializeText();
                   focusInput();
                 }}
-                className="p-2 rounded-xl bg-[#0f1728] border border-[#1e293b] text-[#64748b] hover:text-[#00d49a] hover:border-[#00d49a]/40 transition-colors cursor-pointer"
+                className="p-2 rounded-xl bg-[#0f1728] border border-[#1e293b] text-[#64748b] hover:text-[#00d49a] hover:border-[#00d49a]/40 transition-colors cursor-pointer active:scale-95"
                 title="Restart practice (Tab)"
+                aria-label="Restart practice"
               >
                 <RotateCcw className="w-4 h-4" />
               </button>
@@ -456,7 +550,7 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
 
       {/* 4. Main Typing Area Card: Large dark navy rounded rectangle with subtle border */}
       <div
-        className={`relative min-h-[190px] sm:min-h-[220px] p-6 sm:p-8 rounded-2xl border transition-all duration-300 font-mono cursor-text select-none shadow-xl ${
+        className={`relative min-h-[170px] sm:min-h-[210px] p-4 sm:p-7 rounded-2xl border transition-all duration-300 font-mono cursor-text select-none shadow-xl ${
           settings.theme === 'dark'
             ? 'bg-[#0f1728] border-[#1e293b]'
             : settings.theme === 'sepia'
@@ -464,14 +558,36 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
             : 'bg-white border-slate-200'
         }`}
       >
+        {/*
+          Mobile-friendly hidden input:
+          Placed directly within the typing card container.
+          This prevents mobile browsers from jumping or scrolling to an offscreen element.
+          16px font-size prevents iOS Safari from automatically zooming into inputs.
+        */}
+        <input
+          ref={inputRef}
+          type="text"
+          value={userInput}
+          onChange={handleInputChange}
+          onKeyDown={handleKeyDown}
+          className="absolute inset-0 w-full h-full opacity-0 z-10 cursor-text select-none"
+          style={{ fontSize: '16px' }}
+          autoCapitalize="none"
+          autoCorrect="off"
+          autoComplete="off"
+          spellCheck="false"
+          aria-label="Typing test input"
+        />
+
         {/* Paused Overlay */}
         {status === 'paused' && (
-          <div className="absolute inset-0 z-20 rounded-2xl bg-[#0b0f14]/80 backdrop-blur-xs flex flex-col items-center justify-center gap-3 text-white">
+          <div className="absolute inset-0 z-20 rounded-2xl bg-[#0b0f14]/85 backdrop-blur-xs flex flex-col items-center justify-center gap-3 text-white">
             <span className="font-sans text-lg font-bold">Practice Paused</span>
             <p className="text-xs text-[#94a3b8] font-sans">
-              Press resume or click to continue your flow
+              Press resume or tap to continue your flow
             </p>
             <button
+              type="button"
               onClick={(e) => {
                 e.stopPropagation();
                 setStatus('running');
@@ -486,19 +602,35 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
         )}
 
         {/* Status message in upper-right corner */}
-        <div className="absolute top-3.5 right-4 text-[11px] font-sans text-[#475569] flex items-center gap-1.5 pointer-events-none">
+        <div className="absolute top-3 right-4 text-[10px] sm:text-[11px] font-sans text-[#475569] flex items-center gap-1.5 pointer-events-none z-10">
           {status === 'idle' && userInput.length === 0 ? (
             <>
               <span className="w-1.5 h-1.5 rounded-full bg-[#00d49a] animate-ping"></span>
-              <span>type to begin • tab to restart</span>
+              <span className="hidden sm:inline">type to begin • tab to restart</span>
+              <span className="sm:hidden">tap to type</span>
             </>
           ) : (
-            <span>tab to restart</span>
+            <span className="hidden sm:inline">tab to restart</span>
           )}
         </div>
 
-        {/* Text Rendering Engine */}
-        <div className={`${fontSizeClasses} tracking-normal select-none leading-relaxed break-words pt-1`}>
+        {/*
+          Text Display Container:
+          Constrained scroll container for text lines with smooth internal scrolling.
+          Keeps words completely visible without overflowing behind the mobile keyboard.
+        */}
+        <div
+          ref={textContainerRef}
+          onTouchStart={() => {
+            isUserTouchingRef.current = true;
+          }}
+          onTouchEnd={() => {
+            setTimeout(() => {
+              isUserTouchingRef.current = false;
+            }, 600);
+          }}
+          className={`${fontSizeClasses} max-h-[140px] sm:max-h-[190px] md:max-h-[230px] overflow-y-auto pr-1 tracking-normal select-none leading-relaxed break-words pt-1 relative z-0`}
+        >
           {targetText.split('').map((char, index) => {
             const isTyped = index < userInput.length;
             const isCurrent = index === userInput.length;
@@ -515,7 +647,11 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
             }
 
             return (
-              <span key={index} className="relative inline-block">
+              <span
+                key={index}
+                ref={isCurrent ? activeCharRef : undefined}
+                className="relative inline-block"
+              >
                 {/* Thin neon-green blinking caret */}
                 {isCurrent && (
                   <span className="absolute -left-[1px] inset-y-1 w-[2px] bg-[#00d49a] rounded-full animate-caret shadow-[0_0_8px_#00d49a] z-10" />
@@ -532,7 +668,7 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
 
       {/* Active Lesson Guidance Banner */}
       {activeLesson && (
-        <div className="mt-3.5 p-3 rounded-xl bg-[#00d49a]/10 border border-[#00d49a]/20 text-xs flex items-center justify-between gap-3">
+        <div className="mt-3 p-3 rounded-xl bg-[#00d49a]/10 border border-[#00d49a]/20 text-xs flex items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-[#00d49a] shrink-0" />
             <div>
@@ -545,6 +681,7 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
             </div>
           </div>
           <button
+            type="button"
             onClick={onSwitchToLessons}
             className="text-[#00d49a] hover:underline font-semibold shrink-0 cursor-pointer"
           >
@@ -553,20 +690,23 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
         </div>
       )}
 
-      {/* 5. Next-Key Indicator & 6. Virtual Keyboard */}
-      {settings.showKeyboardGuide && (
-        <VirtualKeyboard
-          currentKey={nextExpectedChar}
-          theme={settings.theme}
-          showHandsGuide={settings.showHandsGuide}
-        />
-      )}
+      {/*
+        5. Next-Key Indicator & 6. Virtual Keyboard:
+        Controlled independently by settings.showHandsGuide and settings.showKeyboardGuide.
+        Completely hidden and vertical space reclaimed when toggled off.
+      */}
+      <VirtualKeyboard
+        currentKey={nextExpectedChar}
+        theme={settings.theme}
+        showKeyboard={settings.showKeyboardGuide}
+        showHandsGuide={settings.showHandsGuide}
+      />
 
       {/* Custom Text Modal */}
       {isCustomModalOpen && (
         <div
           onClick={(e) => e.stopPropagation()}
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm"
         >
           <div className="w-full max-w-lg p-6 rounded-2xl bg-[#0f1728] border border-[#1e293b] shadow-2xl space-y-4">
             <h3 className="text-lg font-bold text-white">
@@ -584,12 +724,14 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
             />
             <div className="flex justify-end gap-2">
               <button
+                type="button"
                 onClick={() => setIsCustomModalOpen(false)}
                 className="px-4 py-2 rounded-xl text-xs font-medium text-[#94a3b8] hover:bg-[#151f32] cursor-pointer"
               >
                 Cancel
               </button>
               <button
+                type="button"
                 onClick={() => {
                   setMode('custom');
                   setIsCustomModalOpen(false);
