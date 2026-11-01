@@ -66,7 +66,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
           <button
             type="button"
             onClick={() => onStartPractice()}
-            className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#00d49a] hover:bg-[#00d49a]/90 text-[#0b0f14] font-bold text-sm transition-all duration-150 shadow-md shadow-[#00d49a]/25 active:scale-95 shrink-0 cursor-pointer"
+            className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#00d49a] hover:bg-[#00d49a]/90 text-[#0b0f14] font-bold text-sm transition-[color,background-color,border-color,box-shadow,transform] duration-150 shadow-md shadow-[#00d49a]/25 active:scale-95 shrink-0 cursor-pointer"
           >
             <span>{coachTip.actionText}</span>
             <ArrowRight className="w-4 h-4" />
@@ -184,7 +184,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     </div>
 
                     <div
-                      className="w-full max-w-[28px] rounded-t-md bg-[#00d49a] group-hover:bg-[#00d49a]/90 transition-all duration-300 relative overflow-hidden shadow-sm"
+                      className="w-full max-w-[28px] rounded-t-md bg-[#00d49a] group-hover:bg-[#00d49a]/90 transition-[color,background-color,border-color,box-shadow,transform] duration-300 relative overflow-hidden shadow-sm"
                       style={{ height: `${heightPercent}%` }}
                     >
                       <div

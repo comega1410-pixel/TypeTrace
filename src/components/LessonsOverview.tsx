@@ -49,7 +49,7 @@ export const LessonsOverview: React.FC<LessonsOverviewProps> = ({
           return (
             <div
               key={level.id}
-              className={`p-5 rounded-2xl border backdrop-blur-md transition-all duration-200 flex flex-col justify-between shadow-lg ${
+              className={`p-5 rounded-2xl border backdrop-blur-md transition-[color,background-color,border-color,box-shadow,transform] duration-200 flex flex-col justify-between shadow-lg ${
                 isCurrent
                   ? 'bg-[#0f1728]/90 border-[#00d49a]/50 ring-1 ring-[#00d49a]/40 shadow-[#00d49a]/10'
                   : isUnlocked
@@ -149,7 +149,7 @@ export const LessonsOverview: React.FC<LessonsOverviewProps> = ({
                       </div>
 
                       {isUnlocked && (
-                        <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#00d49a] group-hover:translate-x-0.5 transition-all" />
+                        <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#00d49a] group-hover:translate-x-0.5 transition-[color,background-color,border-color,box-shadow,transform]" />
                       )}
                     </button>
                   ))}
